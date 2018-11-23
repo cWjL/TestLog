@@ -11,16 +11,22 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 
 public class LandingPanel extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3132553552127943631L;
 	private final Dimension BUTTON_SIZE = new Dimension(200, 50);
 	private final Dimension PANEL_SIZE = new Dimension(50,50);
+	public JButton newLogButton;
+	public JButton openLogButton;
 	
 	public LandingPanel(){
 		this.setLayout(new GridBagLayout()); //GridLayout(int rows, int cols, int hgap, int vgap)
-		JButton newLogButton = new JButton("New Log");
+		this.newLogButton = new JButton("New Log");
 		newLogButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		newLogButton.setToolTipText("Start a new test log document");
 		newLogButton.setPreferredSize(BUTTON_SIZE);
-		JButton openLogButton = new JButton("Open Log");
+		this.openLogButton = new JButton("Open Log");
 		openLogButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		openLogButton.setToolTipText("Open an existing test log document");
 		openLogButton.setPreferredSize(BUTTON_SIZE);
