@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 import panels.LandingPanel;
+import panels.NewLogPanel;
 
 public class Entry extends JFrame{
 	
@@ -42,10 +43,12 @@ public class Entry extends JFrame{
 		});
 		
 		this.setLocationRelativeTo(null);
-		this.setPreferredSize(SEL_SIZE);
+		//this.setPreferredSize(SEL_SIZE);
 		this.setResizable(false);
 		LandingPanel landPanel = new LandingPanel();
-		this.setContentPane(landPanel);
+		NewLogPanel newLog = new NewLogPanel();
+		//this.add(newLog);
+		this.setContentPane(newLog);
 		this.pack();
 		this.setVisible(true);
 		
