@@ -1,5 +1,5 @@
 package frames;
-import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -12,20 +12,13 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import panels.LandingPanel;
 import panels.NewLogPanel;
 
 public class Entry extends JFrame{
+
+	private static final long serialVersionUID = -3589089200466664223L;
 	
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3589089200466664223L;
-	private final Dimension SEL_SIZE = new Dimension(500, 300);
-	private final Dimension FRAME_SIZE = new Dimension(600, 400);
-	public TestLogger newLogger;
-	
-	/*
 	 * Show landing GUI
 	 * 
 	 * @param None
@@ -92,7 +85,6 @@ public class Entry extends JFrame{
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 		});
@@ -107,7 +99,6 @@ public class Entry extends JFrame{
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 		});
@@ -131,7 +122,7 @@ public class Entry extends JFrame{
 	/**
 	 * Gets String of installed LAF based on selection String passed as parameter
 	 * 
-	 * @param lafString
+	 * @param String lafString
 	 * @return String info.getClassName from OS
 	 */
 	public static String getLookAndFeelClassName(String lafString){
@@ -145,7 +136,9 @@ public class Entry extends JFrame{
 	}
 	/**
 	 * Deploys UI in AWT event-dispatching thread with selected LAF
-	 * @param args
+	 * @param String title
+	 * @param String[] test cases
+	 * @return none
 	 */
 	public void launchLogger(String title, String[] testCases){
 		final String lafClassName = getLookAndFeelClassName("Nimbus");
@@ -163,7 +156,7 @@ public class Entry extends JFrame{
 				}catch(UnsupportedLookAndFeelException ex){
 					Logger.getLogger(Entry.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				newLogger = new TestLogger(title, testCases);
+				new TestLogger(title, testCases).showUI();;
 			}
 		});
 	}
