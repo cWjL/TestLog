@@ -11,6 +11,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import frames.Entry;
 
 public class Main {
+	private static final String VERSION = "1.0";
 	
 	/**
 	 * Gets String of installed LAF based on selection String passed as parameter
@@ -33,6 +34,16 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args){
+		/**
+		 * Print version number and exit 
+		 */
+		if(args.length > 0){
+			if(args.equals("--version") || args.equals("-v")){
+				System.out.println(VERSION);
+				System.exit(0);
+			}
+		}
+		
 		final String lafClassName = getLookAndFeelClassName("Nimbus");
 		
 		SwingUtilities.invokeLater(new Runnable(){	// launch UI in AWT event-dispatching thread
