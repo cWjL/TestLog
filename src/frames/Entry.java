@@ -14,6 +14,11 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import panels.NewLogPanel;
 
+/**
+ * Initial landing frame.  Main calls Entry.java frame which adds NewLogPanel.java panel
+ * 
+ *  @author Jacob Loden
+ */
 public class Entry extends JFrame{
 
 	private static final long serialVersionUID = -3589089200466664223L;
@@ -33,7 +38,7 @@ public class Entry extends JFrame{
 		this.setIconImage(h_well_img.getImage());
 		this.setTitle("Test Log");
 		
-		/*kill on frame exit*/
+		/* kill on frame exit */
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter(){
 				public void windowClosing(WindowEvent e){
@@ -45,12 +50,14 @@ public class Entry extends JFrame{
 		
 		NewLogPanel newLog = new NewLogPanel();
 		
+		/* Pack and show frame */
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setContentPane(newLog);
 		this.pack();
 		this.setVisible(true);
 		
+		/* Action listeners */
 		newLog.cancel.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				Entry.this.dispose();
@@ -70,7 +77,16 @@ public class Entry extends JFrame{
 					repackFrame();
 				}else{
 					Entry.this.dispose();
-					launchLogger(newLog.projTitleText.getText(), newLog.testCaseText.getText().split(","));
+					String[] woOpts = newLog.testCaseText.getText().split(",");
+					String[] withOpts = new String[woOpts.length+2];
+					withOpts[0] = "-Select-";
+					withOpts[1] = "Note";
+					int j = 2;
+					for(int i = 0; i<woOpts.length; i++) {
+						withOpts[j] = woOpts[i];
+						j++;
+					}
+					launchLogger(newLog.projTitleText.getText(), withOpts);
 				}
 			}
 		});
@@ -110,7 +126,7 @@ public class Entry extends JFrame{
 		});
 	}
 	/**
-	 * Repack frame
+	 * Re-pack frame
 	 * 
 	 * @param none
 	 * @return none
@@ -136,6 +152,7 @@ public class Entry extends JFrame{
 	}
 	/**
 	 * Deploys UI in AWT event-dispatching thread with selected LAF
+	 * 
 	 * @param String title
 	 * @param String[] test cases
 	 * @return none

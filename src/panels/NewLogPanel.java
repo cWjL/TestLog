@@ -9,10 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Initial landing panel.  Main calls Entry.java frame which adds this panel
+ * 
+ *  @author Jacob Loden
+ */
 public class NewLogPanel extends JPanel{
 
 	/**
-	 * 
+	 * Class variables
 	 */
 	private static final long serialVersionUID = 8335816020270057349L;
 	private final Dimension BUTTON_SZ = new Dimension(75,30);
@@ -23,6 +28,12 @@ public class NewLogPanel extends JPanel{
 	public JTextField testCaseText;
 	public JLabel errorMsg;
 	
+	/**
+	 * Class constructor
+	 * 
+	 *  @param none
+	 *  @return none
+	 */
 	public NewLogPanel(){
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		JPanel projectPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
