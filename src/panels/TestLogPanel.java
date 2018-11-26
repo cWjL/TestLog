@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +51,19 @@ public class TestLogPanel extends JPanel{
 	public TestLogPanel(String title, String[] testCases){
 		this.title = title;
 		this.testCases = testCases;
-		showPanel();
+		showPanel(null);
+	}
+	
+	/**
+	 * Panel constructor
+	 * 
+	 *  @param String title
+	 *  @return String[] test cases
+	 */
+	public TestLogPanel(String title, String[] testCases, File fp){
+		this.title = title;
+		this.testCases = testCases;
+		showPanel(fp);
 	}
 	
 	/**
@@ -56,12 +72,23 @@ public class TestLogPanel extends JPanel{
 	 * @param none
 	 * @return none
 	 */
-	private void showPanel(){
-
+	private void showPanel(File fp){
+		//FileReader reader = null;
 		
 		JPanel controlPanel = new JPanel(new GridLayout(0,1));
 		JPanel editorPanel = new JPanel(new BorderLayout());
 		this.logText = new JTextArea();
+		if(fp != null) {
+			try {
+				this.logText.read(new FileReader(fp), null);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		logText.setPreferredSize(TEXT_SZ);
 		editorPanel.add(logText, BorderLayout.CENTER);
 		

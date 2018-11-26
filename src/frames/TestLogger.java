@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import panels.TestLogPanel;
@@ -36,6 +37,7 @@ public class TestLogger extends JFrame{
 	private String[] testCase;
 	private DateFormat currentDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private File out = null;
+	private File in = null;
 	/**
 	 * Class constructor
 	 * 
@@ -45,9 +47,23 @@ public class TestLogger extends JFrame{
 	 * @return none
 	 */
 	public TestLogger(String title, String[] testCases){
-		
 		this.title = title;
 		this.testCase = testCases;
+		//System.out.println(buildEmbedString(this.testCase));
+	}
+	
+	/**
+	 * Class constructor
+	 * 
+	 * 
+	 * @param String title
+	 * @param String[] test cases
+	 * @return none
+	 */
+	public TestLogger(String title, String[] testCases, File fp) {
+		this.title = title;
+		this.testCase = testCases;
+		this.in = fp;
 	}
 	
 	/**
@@ -70,9 +86,15 @@ public class TestLogger extends JFrame{
 					System.exit(0);
 				}
 		});
-		
+		TestLogPanel runPanel;
 		/* Pack and show the frame */
-		TestLogPanel runPanel = new TestLogPanel(this.title, this.testCase);
+		if(this.in != null) {
+			runPanel = new TestLogPanel(this.title, this.testCase);
+		}else {
+			runPanel = new TestLogPanel(this.title, this.testCase, this.in);
+		}
+
+		runPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'\n');
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setContentPane(runPanel);
@@ -85,15 +107,16 @@ public class TestLogger extends JFrame{
 				if(!runPanel.logText.getText().equals("")) {
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
+						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
+							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 						if(TestLogger.this.out != null) {
 							save(runPanel.logText);
 						}else {
 							saveAs(TestLogger.this, runPanel.logText);
 						}
-					}else {
-						TestLogger.this.dispose();
-						System.exit(0);
 					}
+					TestLogger.this.dispose();
+					System.exit(0);
 				}
 			}
 		});
@@ -103,6 +126,8 @@ public class TestLogger extends JFrame{
 				if(!runPanel.logText.getText().equals("")) {
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
+						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
+							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 						if(TestLogger.this.out != null) {
 							save(runPanel.logText);
 						}else {
@@ -112,6 +137,7 @@ public class TestLogger extends JFrame{
 						TestLogger.this.out = null;
 					}
 					runPanel.logText.setText("");
+					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'\n');
 					runPanel.testCaseSelection.setSelectedIndex(0);
 				}
 			}
@@ -129,12 +155,23 @@ public class TestLogger extends JFrame{
 		
 		runPanel.newLogEntry.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent ae) {
-				Date date = new Date();
-				runPanel.logText.append("["+TestLogger.this.currentDate.format(date)+"] ["+runPanel.testCaseSelection.getSelectedItem().toString()+"] "
-						+runPanel.newLogEntry.getText()+'\n');
-				runPanel.newLogEntry.setText("");
+				if(runPanel.testCaseSelection.getSelectedIndex() != 0) {
+					runPanel.logText.append("["+TestLogger.this.currentDate.format(new Date())+"] ["+runPanel.testCaseSelection.getSelectedItem().toString()+"] "
+							+runPanel.newLogEntry.getText()+'\n');
+					runPanel.newLogEntry.setText("");
+				}else{
+					JOptionPane.showMessageDialog(runPanel, "You need to select a test case", "Test Log", JOptionPane.OK_OPTION);
+				}
 			}
 		});
+	}
+	
+	private String buildEmbedString(String[] arr) {
+		String embedStr = "";
+		for(int i = 0; i<arr.length; i++) {
+			embedStr += arr[i]+',';
+		}
+		return embedStr;
 	}
 	
 	/**
@@ -144,7 +181,7 @@ public class TestLogger extends JFrame{
 	 * @return none
 	 * @exception IOException
 	 */
-	public void save(JTextArea text) {
+	private void save(JTextArea text) {
 		try(BufferedWriter fileOut = new BufferedWriter(new FileWriter(this.out))){
 			text.write(fileOut);
 		} catch (IOException e) {
@@ -160,7 +197,7 @@ public class TestLogger extends JFrame{
 	 * @param JTextArea to save
 	 * @exception IOException
 	 */
-	public void saveAs(JFrame frame, JTextArea text) {
+	private void saveAs(JFrame frame, JTextArea text) {
 		JFileChooser fileChooser = new JFileChooser();
 		if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
 		  this.out = fileChooser.getSelectedFile();

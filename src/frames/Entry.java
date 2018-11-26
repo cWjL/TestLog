@@ -6,6 +6,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +28,7 @@ import panels.NewLogPanel;
 public class Entry extends JFrame{
 
 	private static final long serialVersionUID = -3589089200466664223L;
+	public NewLogPanel newLog;
 	
 	/**
 	 * Show landing GUI
@@ -48,7 +55,7 @@ public class Entry extends JFrame{
 				}
 		});
 		
-		NewLogPanel newLog = new NewLogPanel();
+		this.newLog = new NewLogPanel();
 		
 		/* Pack and show frame */
 		this.setLocationRelativeTo(null);
@@ -58,14 +65,14 @@ public class Entry extends JFrame{
 		this.setVisible(true);
 		
 		/* Action listeners */
-		newLog.cancel.addActionListener(new ActionListener(){
+		this.newLog.cancel.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				Entry.this.dispose();
 				System.exit(0);
 			}
 		});
 		
-		newLog.ok.addActionListener(new ActionListener(){
+		this.newLog.ok.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				if(newLog.projTitleText.getText().equals("") || newLog.testCaseText.getText().equals("")){
 					newLog.errorMsg.setText("Project title/Test cases missing");
@@ -77,21 +84,12 @@ public class Entry extends JFrame{
 					repackFrame();
 				}else{
 					Entry.this.dispose();
-					String[] woOpts = newLog.testCaseText.getText().split(",");
-					String[] withOpts = new String[woOpts.length+2];
-					withOpts[0] = "-Select-";
-					withOpts[1] = "Note";
-					int j = 2;
-					for(int i = 0; i<woOpts.length; i++) {
-						withOpts[j] = woOpts[i];
-						j++;
-					}
-					launchLogger(newLog.projTitleText.getText(), withOpts);
+					launchLogger(newLog.projTitleText.getText(), getOpts(newLog.testCaseText.getText().split(",")), null);
 				}
 			}
 		});
 		
-		newLog.projTitleText.addFocusListener(new FocusListener(){
+		this.newLog.projTitleText.addFocusListener(new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent e) {
 				newLog.errorMsg.setText("");
@@ -105,7 +103,7 @@ public class Entry extends JFrame{
 			}
 		});
 		
-		newLog.testCaseText.addFocusListener(new FocusListener(){
+		this.newLog.testCaseText.addFocusListener(new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent e) {
 				newLog.errorMsg.setText("");
@@ -119,11 +117,102 @@ public class Entry extends JFrame{
 			}
 		});
 		
-		newLog.open.addActionListener(new ActionListener(){
+		this.newLog.open.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(newLog) == JFileChooser.APPROVE_OPTION) {
+				  File file = fileChooser.getSelectedFile();
+				  if(checkFile(file)) {
+					  String[] tc = getInputFileTestCases(file);
+					  if(tc != null) {
+						  launchLogger(newLog.projTitleText.getText(), tc, file);
+					  }
+				  }else {
+					  JOptionPane.showMessageDialog(newLog, "File not in proper format", "Test Log", JOptionPane.OK_OPTION);
+				  }
+				}
 			}
 		});
+	}
+	
+	/**
+	 * Get test cases from input file
+	 * 
+	 * @param File file pointer to 
+	 * @return String[] formatted test cases
+	 */	
+	private String[] getInputFileTestCases(File fp) {
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(fp));
+			if(fp.getAbsolutePath().endsWith(".txt")) {
+				String last = "", line;
+				String[] testLine;
+			    while ((line = input.readLine()) != null) { 
+			        last = line;
+			    }
+			    testLine = last.split("\t");
+			    if(testLine.length > 1) {
+			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
+			    		String[] ret = testLine[1].split(",");
+			    		for(int i = 0; i<ret.length; i++) {
+			    			ret[i] = ret[i].replaceAll("<", "");
+			    			ret[i] = ret[i].replaceAll(">", "");
+			    		}
+			    		return ret;
+			    	}
+			    }
+			}
+		} catch (IOException e) {
+			
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Check input file format
+	 * 
+	 * @param File file pointer to 
+	 * @return boolean file is valid
+	 */	
+	private boolean checkFile(File fp) {
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(fp));
+			if(fp.getAbsolutePath().endsWith(".txt")) {
+				String last = "", line;
+				String[] testLine;
+			    while ((line = input.readLine()) != null) { 
+			        last = line;
+			    }
+			    testLine = last.split("\t");
+			    if(testLine.length > 1) {
+			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
+			    		return true;
+			    	}
+			    }
+			}
+		} catch (IOException e) {
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * Format test case array
+	 * 
+	 * @param String[] user test cases
+	 * @return String[] formatted test cases
+	 */
+	private String[] getOpts(String[] woOpts) {
+		String[] newOpts = new String[woOpts.length+2];
+		newOpts[0] = "-Select-";
+		newOpts[1] = "Note";
+		int j = 2;
+		for(int i = 0; i<woOpts.length; i++) {
+			newOpts[j] = woOpts[i].replaceFirst("^\\s*", "");
+			j++;
+		}
+		return newOpts;
 	}
 	/**
 	 * Re-pack frame
@@ -131,7 +220,7 @@ public class Entry extends JFrame{
 	 * @param none
 	 * @return none
 	 */
-	public void repackFrame(){
+	private void repackFrame(){
 		this.pack();
 		this.validate();
 	}
@@ -157,7 +246,7 @@ public class Entry extends JFrame{
 	 * @param String[] test cases
 	 * @return none
 	 */
-	public void launchLogger(String title, String[] testCases){
+	private void launchLogger(String title, String[] testCases, File fp){
 		final String lafClassName = getLookAndFeelClassName("Nimbus");
 		
 		SwingUtilities.invokeLater(new Runnable(){	// launch UI in AWT event-dispatching thread
@@ -173,7 +262,12 @@ public class Entry extends JFrame{
 				}catch(UnsupportedLookAndFeelException ex){
 					Logger.getLogger(Entry.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				new TestLogger(title, testCases).showUI();;
+				if(fp == null) {
+					new TestLogger(title, testCases).showUI();
+				}else {
+					new TestLogger(title, testCases, fp).showUI();
+				}
+				
 			}
 		});
 	}
