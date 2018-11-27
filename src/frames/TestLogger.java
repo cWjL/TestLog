@@ -88,7 +88,7 @@ public class TestLogger extends JFrame{
 		});
 		TestLogPanel runPanel;
 		/* Pack and show the frame */
-		if(this.in != null) {
+		if(this.in == null) {
 			runPanel = new TestLogPanel(this.title, this.testCase);
 		}else {
 			runPanel = new TestLogPanel(this.title, this.testCase, this.in);

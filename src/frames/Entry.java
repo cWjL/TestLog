@@ -123,6 +123,7 @@ public class Entry extends JFrame{
 				  if(checkFile(file)) {
 					  String[] tc = getInputFileTestCases(file);
 					  if(tc != null) {
+						  Entry.this.dispose();
 						  launchLogger(newLog.projTitleText.getText(), tc, file);
 					  }
 				  }else {
