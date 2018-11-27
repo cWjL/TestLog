@@ -46,7 +46,7 @@ public class Main {
 		 * Print version number and exit 
 		 */
 		if(args.length > 0){
-			if(args.equals("--version") || args.equals("-v")){
+			if(args[0].equals("--version") || args[0].equals("-v")){
 				System.out.println(VERSION);
 				System.exit(0);
 			}
