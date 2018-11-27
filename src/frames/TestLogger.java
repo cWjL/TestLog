@@ -108,7 +108,7 @@ public class TestLogger extends JFrame{
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
 						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
-							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 						if(TestLogger.this.out != null) {
 							save(runPanel.logText);
 						}else {
@@ -116,7 +116,7 @@ public class TestLogger extends JFrame{
 						}
 					}else{
 						runPanel.logText.append(TestLogger.this.title+" Test Log Closed: "+TestLogger.this.currentDate.format(new Date())
-							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 					}
 					TestLogger.this.dispose();
 					System.exit(0);
@@ -130,7 +130,7 @@ public class TestLogger extends JFrame{
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
 						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
-							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 						if(TestLogger.this.out != null) {
 							save(runPanel.logText);
 						}else {
@@ -192,7 +192,6 @@ public class TestLogger extends JFrame{
 		try(BufferedWriter fileOut = new BufferedWriter(new FileWriter(this.out))){
 			text.write(fileOut);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -211,7 +210,6 @@ public class TestLogger extends JFrame{
 		  try(BufferedWriter fileOut = new BufferedWriter(new FileWriter(this.out))){
 			  text.write(fileOut);
 		  } catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		  }
 		}

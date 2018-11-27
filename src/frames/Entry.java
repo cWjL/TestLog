@@ -151,7 +151,7 @@ public class Entry extends JFrame{
 			    while ((line = input.readLine()) != null) { 
 			        last = line;
 			    }
-			    testLine = last.split("\t");
+			    testLine = last.split("@");
 			    if(testLine.length > 1) {
 			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
 			    		String[] ret = testLine[1].split(",");
@@ -195,7 +195,7 @@ public class Entry extends JFrame{
 			    while ((line = input.readLine()) != null) { 
 			        last = line;
 			    }
-			    testLine = last.split("\t");
+			    testLine = last.split("@");
 			    if(testLine.length > 1) {
 			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
 			    		return true;
