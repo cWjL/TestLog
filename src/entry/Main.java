@@ -1,4 +1,4 @@
-package entry;
+package src.entry;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import frames.Entry;
+import src.frames.Entry;
 
 /**
  * Entry main.

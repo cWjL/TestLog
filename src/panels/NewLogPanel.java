@@ -1,4 +1,4 @@
-package panels;
+package src.panels;
 
 import java.awt.Color;
 import java.awt.Dimension;

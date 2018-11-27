@@ -1,4 +1,4 @@
-package panels;
+package src.panels;
 
 import javax.swing.JPanel;
 

@@ -1,4 +1,4 @@
-package frames;
+package src.frames;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import panels.TestLogPanel;
+import src.panels.TestLogPanel;
 
 /**
  * Main application frame
