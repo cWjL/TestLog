@@ -108,18 +108,18 @@ public class TestLogger extends JFrame{
 					if(res == 0) {
 						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
 							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
-						if(TestLogger.this.out != null) {
-							save(runPanel.logText);
-						}else {
-							saveAs(TestLogger.this, runPanel.logText);
-						}
 					}else{
 						runPanel.logText.append(TestLogger.this.title+" Test Log Closed: "+TestLogger.this.currentDate.format(new Date())
 							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 					}
-					TestLogger.this.dispose();
-					System.exit(0);
+					if(TestLogger.this.out != null) {
+						save(runPanel.logText);
+					}else {
+						saveAs(TestLogger.this, runPanel.logText);
+					}
 				}
+				TestLogger.this.dispose();
+				System.exit(0);
 			}
 		});
 		
