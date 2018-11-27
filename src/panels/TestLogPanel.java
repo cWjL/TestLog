@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -77,6 +78,7 @@ public class TestLogPanel extends JPanel{
 		
 		JPanel controlPanel = new JPanel(new GridLayout(0,1));
 		JPanel editorPanel = new JPanel(new BorderLayout());
+	
 		this.logText = new JTextArea();
 		if(fp != null) {
 			try {
@@ -89,7 +91,6 @@ public class TestLogPanel extends JPanel{
 				e.printStackTrace();
 			}
 		}
-		logText.setPreferredSize(TEXT_SZ);
 		editorPanel.add(logText, BorderLayout.CENTER);
 		
 		JPanel newEntryPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -117,8 +118,10 @@ public class TestLogPanel extends JPanel{
 		//editorPanel
 		controlPanel.add(newEntryPanel);		
 		controlPanel.add(buttonPanel);
-		
-		JSplitPane contentPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, editorPanel);
+		JScrollPane editorPane = new JScrollPane(editorPanel);
+		editorPane.setPreferredSize(TEXT_SZ);
+		editorPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JSplitPane contentPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, editorPane);
 		contentPane.setEnabled(false);
 		this.add(contentPane);
 	}
