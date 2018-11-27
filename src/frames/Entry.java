@@ -27,6 +27,7 @@ public class Entry extends JFrame{
 
 	private static final long serialVersionUID = -3589089200466664223L;
 	public NewLogPanel newLog;
+	private String oldTitle = null;
 	
 	/**
 	 * Show landing GUI
@@ -122,12 +123,13 @@ public class Entry extends JFrame{
 				  File file = fileChooser.getSelectedFile();
 				  if(checkFile(file)) {
 					  String[] tc = getInputFileTestCases(file);
+					  //String oldTitle;
 					  if(tc != null) {
 						  Entry.this.dispose();
-						  launchLogger(newLog.projTitleText.getText(), tc, file);
+						  launchLogger(Entry.this.oldTitle, tc, file);
 					  }
 				  }else {
-					  JOptionPane.showMessageDialog(newLog, "File not in proper format", "Test Log", JOptionPane.OK_OPTION);
+					  JOptionPane.showMessageDialog(newLog, "File not in proper format. Try again", "Test Log", JOptionPane.OK_OPTION);
 				  }
 				}
 			}
@@ -153,6 +155,7 @@ public class Entry extends JFrame{
 			    if(testLine.length > 1) {
 			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
 			    		String[] ret = testLine[1].split(",");
+			    		this.oldTitle = getPreviousTitle(testLine[0]); 
 			    		for(int i = 0; i<ret.length; i++) {
 			    			ret[i] = ret[i].replaceAll("<", "");
 			    			ret[i] = ret[i].replaceAll(">", "");
@@ -167,6 +170,15 @@ public class Entry extends JFrame{
 		return null;
 	}
 	
+	/**
+	 * Get project title from input file
+	 * 
+	 * @param String first half of input file footer
+	 * @return String project title
+	 */	
+	private String getPreviousTitle(String splitStr){
+		return splitStr.substring(0, splitStr.indexOf("Test"));
+	}
 	
 	/**
 	 * Check input file format

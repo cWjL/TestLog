@@ -114,6 +114,9 @@ public class TestLogger extends JFrame{
 						}else {
 							saveAs(TestLogger.this, runPanel.logText);
 						}
+					}else{
+						runPanel.logText.append(TestLogger.this.title+" Test Log Closed: "+TestLogger.this.currentDate.format(new Date())
+							+'\t'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 					}
 					TestLogger.this.dispose();
 					System.exit(0);
@@ -169,7 +172,11 @@ public class TestLogger extends JFrame{
 	private String buildEmbedString(String[] arr) {
 		String embedStr = "";
 		for(int i = 0; i<arr.length; i++) {
-			embedStr += arr[i]+',';
+			if(i == arr.length-1){
+				embedStr += arr[i];
+			}else{
+				embedStr += arr[i]+',';
+			}
 		}
 		return embedStr;
 	}
