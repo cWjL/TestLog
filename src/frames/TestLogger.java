@@ -11,13 +11,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import src.panels.TestLogPanel;
@@ -72,6 +70,7 @@ public class TestLogger extends JFrame{
 	 * @param none
 	 * @return none
 	 */
+	@SuppressWarnings("serial")
 	public void showUI(){
 		ImageIcon h_well_img = new ImageIcon("resources/honeywell-sec-scaled-50-44.png");
 		this.setIconImage(h_well_img.getImage());
@@ -141,6 +140,7 @@ public class TestLogger extends JFrame{
 					}
 					runPanel.logText.setText("");
 					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'\n');
+					runPanel.newLogEntry.setText("");
 					runPanel.testCaseSelection.setSelectedIndex(0);
 				}
 			}

@@ -142,6 +142,7 @@ public class Entry extends JFrame{
 	 * @param File file pointer to 
 	 * @return String[] formatted test cases
 	 */	
+	@SuppressWarnings("resource")
 	private String[] getInputFileTestCases(File fp) {
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));
@@ -186,6 +187,7 @@ public class Entry extends JFrame{
 	 * @param File file pointer to 
 	 * @return boolean file is valid
 	 */	
+	@SuppressWarnings("resource")
 	private boolean checkFile(File fp) {
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));

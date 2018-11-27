@@ -8,10 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -33,6 +29,7 @@ public class TestLogPanel extends JPanel{
 	private static final long serialVersionUID = 5833830482301963023L;
 	private final Dimension BUTTON_SZ = new Dimension(75,30);
 	private final Dimension TEXT_SZ = new Dimension(700,500);
+	@SuppressWarnings("unused")
 	private String title;
 	private String[] testCases;
 	
