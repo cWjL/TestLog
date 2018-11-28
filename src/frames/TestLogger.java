@@ -51,11 +51,12 @@ public class TestLogger extends JFrame{
 	}
 	
 	/**
-	 * Class constructor
+	 * Class constructor (overloaded)
 	 * 
 	 * 
 	 * @param String title
 	 * @param String[] test cases
+	 * @param File fp
 	 * @return none
 	 */
 	public TestLogger(String title, String[] testCases, File fp) {
