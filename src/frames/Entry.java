@@ -83,7 +83,8 @@ public class Entry extends JFrame{
 					repackFrame();
 				}else{
 					Entry.this.dispose();
-					launchLogger(newLog.projTitleText.getText(), getOpts(newLog.testCaseText.getText().split(",")), null);
+					//remove '@' character if present in user input
+					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), getOpts(newLog.testCaseText.getText().replaceAll("@", "").split(",")), null);
 				}
 			}
 		});
@@ -123,7 +124,6 @@ public class Entry extends JFrame{
 				  File file = fileChooser.getSelectedFile();
 				  if(checkFile(file)) {
 					  String[] tc = getInputFileTestCases(file);
-					  //String oldTitle;
 					  if(tc != null) {
 						  Entry.this.dispose();
 						  launchLogger(Entry.this.oldTitle, tc, file);
@@ -147,22 +147,22 @@ public class Entry extends JFrame{
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));
 			if(fp.getAbsolutePath().endsWith(".txt")) {
-				String last = "", line;
+				String line = "";
 				String[] testLine;
-			    while ((line = input.readLine()) != null) { 
-			        last = line;
-			    }
-			    testLine = last.split("@");
-			    if(testLine.length > 1) {
-			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
-			    		String[] ret = testLine[1].split(",");
-			    		this.oldTitle = getPreviousTitle(testLine[0]); 
-			    		for(int i = 0; i<ret.length; i++) {
-			    			ret[i] = ret[i].replaceAll("<", "");
-			    			ret[i] = ret[i].replaceAll(">", "");
-			    		}
-			    		return ret;
-			    	}
+				line = input.readLine();
+			    if(line != null) {
+			    	testLine = line.split("@");
+				    if(testLine.length > 1) {
+				    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
+				    		String[] ret = testLine[1].split(",");
+				    		this.oldTitle = getPreviousTitle(testLine[0]); 
+				    		for(int i = 0; i<ret.length; i++) {
+				    			ret[i] = ret[i].replaceAll("<", "");
+				    			ret[i] = ret[i].replaceAll(">", "");
+				    		}
+				    		return ret;
+				    	}
+				    }
 			    }
 			}
 		} catch (IOException e) {
@@ -192,17 +192,17 @@ public class Entry extends JFrame{
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));
 			if(fp.getAbsolutePath().endsWith(".txt")) {
-				String last = "", line;
+				String line = "";
 				String[] testLine;
-			    while ((line = input.readLine()) != null) { 
-			        last = line;
-			    }
-			    testLine = last.split("@");
-			    if(testLine.length > 1) {
-			    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
-			    		return true;
-			    	}
-			    }
+				line = input.readLine();
+				if(line != null) {
+					testLine = line.split("@");
+					if(testLine.length > 1) {
+				    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
+				    		return true;
+				    	}
+				    }
+				}
 			}
 		} catch (IOException e) {
 			
@@ -279,8 +279,7 @@ public class Entry extends JFrame{
 					new TestLogger(title, testCases).showUI();
 				}else {
 					new TestLogger(title, testCases, fp).showUI();
-				}
-				
+				}	
 			}
 		});
 	}

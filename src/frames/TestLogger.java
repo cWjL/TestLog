@@ -80,7 +80,6 @@ public class TestLogger extends JFrame{
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter(){
 				public void windowClosing(WindowEvent e){
-					
 					e.getWindow().dispose();
 					System.exit(0);
 				}
@@ -89,11 +88,12 @@ public class TestLogger extends JFrame{
 		/* Pack and show the frame */
 		if(this.in == null) {
 			runPanel = new TestLogPanel(this.title, this.testCase);
+			runPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 		}else {
 			runPanel = new TestLogPanel(this.title, this.testCase, this.in);
+			runPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
 		}
 
-		runPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'\n');
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setContentPane(runPanel);
@@ -106,16 +106,12 @@ public class TestLogger extends JFrame{
 				if(!runPanel.logText.getText().equals("")) {
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
-						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
-							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
-					}else{
-						runPanel.logText.append(TestLogger.this.title+" Test Log Closed: "+TestLogger.this.currentDate.format(new Date())
-							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
-					}
-					if(TestLogger.this.out != null) {
-						save(runPanel.logText);
-					}else {
-						saveAs(TestLogger.this, runPanel.logText);
+						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
+						if(TestLogger.this.out != null) {
+							save(runPanel.logText);
+						}else {
+							saveAs(TestLogger.this, runPanel.logText);
+						}
 					}
 				}
 				TestLogger.this.dispose();
@@ -128,8 +124,7 @@ public class TestLogger extends JFrame{
 				if(!runPanel.logText.getText().equals("")) {
 					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
-						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())
-							+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
 						if(TestLogger.this.out != null) {
 							save(runPanel.logText);
 						}else {
@@ -139,7 +134,7 @@ public class TestLogger extends JFrame{
 						TestLogger.this.out = null;
 					}
 					runPanel.logText.setText("");
-					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'\n');
+					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 					runPanel.newLogEntry.setText("");
 					runPanel.testCaseSelection.setSelectedIndex(0);
 				}

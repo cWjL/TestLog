@@ -14,10 +14,10 @@ import src.frames.Entry;
  * Entry main.
  * 
  *  @author Jacob Loden
- *  @version 1.0
+ *  @version 1.1
  */
 public class Main {
-	private static final String VERSION = "1.0";
+	private static final String VERSION = "1.1";
 	
 	/**
 	 * Gets String of installed LAF based on selection String passed as parameter

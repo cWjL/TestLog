@@ -122,6 +122,4 @@ public class TestLogPanel extends JPanel{
 		contentPane.setEnabled(false);
 		this.add(contentPane);
 	}
-	
-
 }
