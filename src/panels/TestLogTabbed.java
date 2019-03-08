@@ -13,6 +13,7 @@ public class TestLogTabbed extends JTabbedPane{
 	private static final String LOG_LABEL = "Log";
 	private static final String CONFIG_LABEL = "Config";
 	public TestLogPanel logPanel;
+	public TestLogConfigPanel configPanel;
 	/**
 	 * Panel constructor
 	 * 
@@ -22,8 +23,9 @@ public class TestLogTabbed extends JTabbedPane{
 	 */
 	public TestLogTabbed(String title, String[] testCases){
 		this.logPanel = new TestLogPanel(title, testCases);
+		this.configPanel = new TestLogConfigPanel(testCases);
 		this.add(LOG_LABEL, this.logPanel);
-		this.add(CONFIG_LABEL, this.logPanel);
+		this.add(CONFIG_LABEL, this.configPanel);
 		
 	}
 	/**
