@@ -1,8 +1,6 @@
 package src.panels;
 
 import java.io.File;
-
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 /**
  * Main application tabbed pane
@@ -10,6 +8,10 @@ import javax.swing.JTabbedPane;
  * @author Jacob Loden
  */
 public class TestLogTabbed extends JTabbedPane{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String LOG_LABEL = "Log";
 	private static final String CONFIG_LABEL = "Config";
 	public TestLogPanel logPanel;
