@@ -142,7 +142,6 @@ public class Entry extends JFrame{
 	 * @param File file pointer to 
 	 * @return String[] formatted test cases
 	 */	
-	@SuppressWarnings("resource")
 	private String[] getInputFileTestCases(File fp) {
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));
@@ -160,13 +159,15 @@ public class Entry extends JFrame{
 				    			ret[i] = ret[i].replaceAll("<", "");
 				    			ret[i] = ret[i].replaceAll(">", "");
 				    		}
+				    		input.close();
 				    		return ret;
 				    	}
 				    }
 			    }
 			}
+			input.close();
 		} catch (IOException e) {
-			
+
 		}
 		return null;
 	}
@@ -187,7 +188,6 @@ public class Entry extends JFrame{
 	 * @param File file pointer to 
 	 * @return boolean file is valid
 	 */	
-	@SuppressWarnings("resource")
 	private boolean checkFile(File fp) {
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(fp));
@@ -199,11 +199,13 @@ public class Entry extends JFrame{
 					testLine = line.split("@");
 					if(testLine.length > 1) {
 				    	if(testLine[1].contains("<") && testLine[1].contains(">")) {
+				    		input.close();
 				    		return true;
 				    	}
 				    }
 				}
 			}
+			input.close();
 		} catch (IOException e) {
 			
 		}

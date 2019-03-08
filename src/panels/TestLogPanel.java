@@ -44,7 +44,7 @@ public class TestLogPanel extends JPanel{
 	 * Panel constructor
 	 * 
 	 *  @param String title
-	 *  @return String[] test cases
+	 *  @param String[] test cases
 	 */
 	public TestLogPanel(String title, String[] testCases){
 		this.title = title;
@@ -56,7 +56,8 @@ public class TestLogPanel extends JPanel{
 	 * Panel constructor
 	 * 
 	 *  @param String title
-	 *  @return String[] test cases
+	 *  @param String[] test cases
+	 *  @param File fp
 	 */
 	public TestLogPanel(String title, String[] testCases, File fp){
 		this.title = title;
@@ -75,6 +76,7 @@ public class TestLogPanel extends JPanel{
 		
 		JPanel controlPanel = new JPanel(new GridLayout(0,1));
 		JPanel editorPanel = new JPanel(new BorderLayout());
+		
 	
 		this.logText = new JTextArea();
 		if(fp != null) {

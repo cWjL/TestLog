@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import src.panels.TestLogPanel;
+import src.panels.TestLogTabbed;
 
 /**
  * Main application frame
@@ -86,32 +87,44 @@ public class TestLogger extends JFrame{
 				}
 		});
 		TestLogPanel runPanel;
+		/*********************************IN PROGRESS***************************************************************************/
+		TestLogTabbed tabPane;
 		/* Pack and show the frame */
 		if(this.in == null) {
-			runPanel = new TestLogPanel(this.title, this.testCase);
-			runPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+			//runPanel = new TestLogPanel(this.title, this.testCase);
+			//runPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+			/*********************************IN PROGRESS***************************************************************************/
+			tabPane = new TestLogTabbed(this.title, this.testCase);
+			tabPane.logPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+			
 		}else {
-			runPanel = new TestLogPanel(this.title, this.testCase, this.in);
-			runPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
+			//runPanel = new TestLogPanel(this.title, this.testCase, this.in);
+			//runPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
+			/*********************************IN PROGRESS***************************************************************************/
+			tabPane = new TestLogTabbed(this.title, this.testCase, this.in);
+			tabPane.logPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
 		}
 
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-		this.setContentPane(runPanel);
+		//this.setContentPane(runPanel);
+		/*********************************IN PROGRESS***************************************************************************/
+		this.setContentPane(tabPane);
 		this.pack();
 		this.setVisible(true);
-
+		
+		/*********************************IN PROGRESS***************************************************************************/
 		/* Action Listeners */
-		runPanel.exitLog.addActionListener(new ActionListener(){
+		tabPane.logPanel.exitLog.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				if(!runPanel.logText.getText().equals("")) {
-					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
+				if(!tabPane.logPanel.logText.getText().equals("")) {
+					int res = JOptionPane.showConfirmDialog(tabPane.logPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
-						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
+						tabPane.logPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
 						if(TestLogger.this.out != null) {
-							save(runPanel.logText);
+							save(tabPane.logPanel.logText);
 						}else {
-							saveAs(TestLogger.this, runPanel.logText);
+							saveAs(TestLogger.this, tabPane.logPanel.logText);
 						}
 					}
 				}
@@ -120,50 +133,114 @@ public class TestLogger extends JFrame{
 			}
 		});
 		
-		runPanel.newLog.addActionListener(new ActionListener() {
+		tabPane.logPanel.newLog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				if(!runPanel.logText.getText().equals("")) {
-					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
+				if(!tabPane.logPanel.logText.getText().equals("")) {
+					int res = JOptionPane.showConfirmDialog(tabPane.logPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
 					if(res == 0) {
-						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
+						tabPane.logPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
 						if(TestLogger.this.out != null) {
-							save(runPanel.logText);
+							save(tabPane.logPanel.logText);
 						}else {
-							saveAs(TestLogger.this, runPanel.logText);
+							saveAs(TestLogger.this, tabPane.logPanel.logText);
 						}
 					}else {
 						TestLogger.this.out = null;
 					}
-					runPanel.logText.setText("");
-					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
-					runPanel.newLogEntry.setText("");
-					runPanel.testCaseSelection.setSelectedIndex(0);
+					tabPane.logPanel.logText.setText("");
+					tabPane.logPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+					tabPane.logPanel.newLogEntry.setText("");
+					tabPane.logPanel.testCaseSelection.setSelectedIndex(0);
 				}
 			}
 		});
 		
-		runPanel.saveLog.addActionListener(new ActionListener() {
+		tabPane.logPanel.saveLog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				if(TestLogger.this.out != null) {
-					save(runPanel.logText);
+					save(tabPane.logPanel.logText);
 				}else {
-					saveAs(TestLogger.this, runPanel.logText);
+					saveAs(TestLogger.this, tabPane.logPanel.logText);
 				}
 			}
 		});
 		
-		runPanel.newLogEntry.addActionListener(new AbstractAction() {
+		tabPane.logPanel.newLogEntry.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent ae) {
-				if(runPanel.testCaseSelection.getSelectedIndex() != 0) {
-					runPanel.logText.append("["+TestLogger.this.currentDate.format(new Date())+"] ["+runPanel.testCaseSelection.getSelectedItem().toString()+"] "
-							+runPanel.newLogEntry.getText()+'\n');
-					runPanel.newLogEntry.setText("");
+				if(tabPane.logPanel.testCaseSelection.getSelectedIndex() != 0) {
+					tabPane.logPanel.logText.append("["+TestLogger.this.currentDate.format(new Date())+"] ["+tabPane.logPanel.testCaseSelection.getSelectedItem().toString()+"] "
+							+tabPane.logPanel.newLogEntry.getText()+'\n');
+					tabPane.logPanel.newLogEntry.setText("");
 				}else{
-					JOptionPane.showMessageDialog(runPanel, "You need to select a test case", "Test Log", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(tabPane.logPanel, "You need to select a test case", "Test Log", JOptionPane.OK_OPTION);
 				}
 			}
 		});
 	}
+
+//		/* Action Listeners */
+//		runPanel.exitLog.addActionListener(new ActionListener(){
+//			public void actionPerformed(ActionEvent ae){
+//				if(!runPanel.logText.getText().equals("")) {
+//					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
+//					if(res == 0) {
+//						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
+//						if(TestLogger.this.out != null) {
+//							save(runPanel.logText);
+//						}else {
+//							saveAs(TestLogger.this, runPanel.logText);
+//						}
+//					}
+//				}
+//				TestLogger.this.dispose();
+//				System.exit(0);
+//			}
+//		});
+//		
+//		runPanel.newLog.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent ae) {
+//				if(!runPanel.logText.getText().equals("")) {
+//					int res = JOptionPane.showConfirmDialog(runPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
+//					if(res == 0) {
+//						runPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
+//						if(TestLogger.this.out != null) {
+//							save(runPanel.logText);
+//						}else {
+//							saveAs(TestLogger.this, runPanel.logText);
+//						}
+//					}else {
+//						TestLogger.this.out = null;
+//					}
+//					runPanel.logText.setText("");
+//					runPanel.logText.append(TestLogger.this.title+" Test Log Started: "+TestLogger.this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+//					runPanel.newLogEntry.setText("");
+//					runPanel.testCaseSelection.setSelectedIndex(0);
+//				}
+//			}
+//		});
+//		
+//		runPanel.saveLog.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent ae) {
+//				if(TestLogger.this.out != null) {
+//					save(runPanel.logText);
+//				}else {
+//					saveAs(TestLogger.this, runPanel.logText);
+//				}
+//			}
+//		});
+//		
+//		runPanel.newLogEntry.addActionListener(new AbstractAction() {
+//			public void actionPerformed(ActionEvent ae) {
+//				if(runPanel.testCaseSelection.getSelectedIndex() != 0) {
+//					runPanel.logText.append("["+TestLogger.this.currentDate.format(new Date())+"] ["+runPanel.testCaseSelection.getSelectedItem().toString()+"] "
+//							+runPanel.newLogEntry.getText()+'\n');
+//					runPanel.newLogEntry.setText("");
+//				}else{
+//					JOptionPane.showMessageDialog(runPanel, "You need to select a test case", "Test Log", JOptionPane.OK_OPTION);
+//				}
+//			}
+//		});
+//	}
 	
 	private String buildEmbedString(String[] arr) {
 		String embedStr = "";
