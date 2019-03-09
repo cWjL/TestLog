@@ -94,14 +94,14 @@ public class TestLogConfigPanel extends JPanel {
 		JPanel cmdPanel = new JPanel();
 		JPanel cmdLabelPanel = new JPanel(new BorderLayout());
 		cmdPanel.setLayout(new BoxLayout(cmdPanel, BoxLayout.Y_AXIS));
-		cmdLabelPanel.add(this.TEST_CMD_LABEL, BorderLayout.CENTER);
+		cmdLabelPanel.add(this.TEST_CMD_LABEL, BorderLayout.SOUTH);
 		cmdPanel.add(cmdLabelPanel);
 		cmdPanel.add(cmdPane);
 		
 		JPanel tcPanel = new JPanel();
 		JPanel tcLabelPanel = new JPanel(new BorderLayout());
 		tcPanel.setLayout(new BoxLayout(tcPanel, BoxLayout.Y_AXIS));
-		tcLabelPanel.add(this.TEST_CASE_LABEL, BorderLayout.CENTER);
+		tcLabelPanel.add(this.TEST_CASE_LABEL, BorderLayout.SOUTH);
 		tcPanel.add(tcLabelPanel);
 		tcPanel.add(tcPane);
 

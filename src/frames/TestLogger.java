@@ -34,10 +34,25 @@ public class TestLogger extends JFrame{
 	private static final long serialVersionUID = 6998372573965893306L;
 	private String title;
 	private String[] testCase;
+	
 	private DateFormat currentDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private File out = null;
 	private File in = null;
 	private Boolean saved = false;
+	
+	/**
+	 * Class constructor
+	 * 
+	 * 
+	 * @param String title
+	 * @param String[] test cases
+	 * @return none
+	 */
+	public TestLogger(String title){
+		this.title = title;
+		this.testCase = new String[]{"-Select-", "Note"};
+	}
+	
 	/**
 	 * Class constructor
 	 * 
@@ -104,6 +119,8 @@ public class TestLogger extends JFrame{
 		this.setResizable(false);
 
 		tabPane.configPanel.notSaved.setVisible(false);
+		tabPane.logPanel.notSaved.setVisible(false);
+		
 		this.setContentPane(tabPane);
 		this.pack();
 		this.setVisible(true);
@@ -169,7 +186,7 @@ public class TestLogger extends JFrame{
 		 */
 		tabPane.configPanel.clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String[] options = {"","Test Cases","Test Commands"};
+				String[] options = {"Test Cases","Test Commands"};
 				Object clearThis = JOptionPane.showInputDialog(null, null, "Clear What? ",
 						JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 

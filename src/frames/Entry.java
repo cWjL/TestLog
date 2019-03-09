@@ -73,17 +73,16 @@ public class Entry extends JFrame{
 		
 		this.newLog.ok.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				if(newLog.projTitleText.getText().equals("") || newLog.testCaseText.getText().equals("")){
+				if(newLog.projTitleText.getText().equals("")){
 					newLog.errorMsg.setText("Project title/Test cases missing");
 					newLog.errorMsg.setVisible(true);
 					repackFrame();
-				}else if(!newLog.testCaseText.getText().contains(",") && !newLog.testCaseText.getText().contains(" ")){
+				}else if(!newLog.testCaseText.getText().isEmpty() && !newLog.testCaseText.getText().contains(",") && !newLog.testCaseText.getText().contains(" ")){
 					newLog.errorMsg.setText("Enter test cases as comma separated list");
 					newLog.errorMsg.setVisible(true);
 					repackFrame();
 				}else{
 					Entry.this.dispose();
-					//remove '@' character if present in user input
 					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), getOpts(newLog.testCaseText.getText().replaceAll("@", "").split(",")), null);
 				}
 			}

@@ -1,6 +1,7 @@
 package src.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -32,14 +33,31 @@ public class TestLogPanel extends JPanel{
 	@SuppressWarnings("unused")
 	private String title;
 	private String[] testCases;
+	public JLabel notSaved;
+	private String[] testCmd;
 	
 	public JTextArea logText;
 	public JTextField newLogEntry;
 	public JComboBox<String> testCaseSelection;
+	public JComboBox<String> testCommandSelection;
 	
 	public JButton saveLog;
 	public JButton exitLog;
 	public JButton newLog;
+	
+	/**
+	 * Panel constructor
+	 * 
+	 *  @param String title
+	 *  @param String[] test cases
+	 */
+	public TestLogPanel(String title){
+		this.title = title;
+		this.testCases = new String[]{"-Select-", "Note"};
+		this.testCmd = new String[]{"-Select-"};
+		showPanel(null);
+	}
+	
 	/**
 	 * Panel constructor
 	 * 
@@ -49,6 +67,7 @@ public class TestLogPanel extends JPanel{
 	public TestLogPanel(String title, String[] testCases){
 		this.title = title;
 		this.testCases = testCases;
+		this.testCmd = new String[]{"-Select-"};
 		showPanel(null);
 	}
 	
@@ -62,6 +81,7 @@ public class TestLogPanel extends JPanel{
 	public TestLogPanel(String title, String[] testCases, File fp){
 		this.title = title;
 		this.testCases = testCases;
+		this.testCmd = new String[]{"-Select-"};
 		showPanel(fp);
 	}
 	
@@ -74,9 +94,12 @@ public class TestLogPanel extends JPanel{
 	private void showPanel(File fp){
 		//FileReader reader = null;
 		
-		JPanel controlPanel = new JPanel(new GridLayout(0,1));
+		JPanel controlPanel = new JPanel(new GridLayout(3,1));
+		//JPanel controlPanel = new JPanel(new BorderLayout());
 		JPanel editorPanel = new JPanel(new BorderLayout());
 		
+		this.notSaved = new JLabel("\u2022 Unsaved Changes");
+		this.notSaved.setForeground(Color.RED);	
 	
 		this.logText = new JTextArea();
 		if(fp != null) {
@@ -94,13 +117,29 @@ public class TestLogPanel extends JPanel{
 		
 		JPanel newEntryPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		this.newLogEntry = new JTextField(50);
+		
 		JLabel newLogLabel = new JLabel("New Log Entry:");
-		this.testCaseSelection = new JComboBox<String>(this.testCases);		
+		this.testCaseSelection = new JComboBox<String>(this.testCases);
+		
+		JLabel newCmdLabel = new JLabel("Select Test CMD:");
+		this.testCommandSelection = new JComboBox<String>(this.testCmd);
+		this.testCommandSelection.setPreferredSize(new Dimension(647, 27));
+		this.testCommandSelection.setAlignmentX(CENTER_ALIGNMENT);
+		
+		JPanel newCmdPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		newCmdPanel.add(newCmdLabel);
+		newCmdPanel.add(this.testCommandSelection);
+		
 		newEntryPanel.add(newLogLabel);
 		newEntryPanel.add(newLogEntry);
 		newEntryPanel.add(testCaseSelection);
+		
+		JPanel buttonPanel = new JPanel(new BorderLayout());
+		
+		JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		leftButtonPanel.add(this.notSaved);
 
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		this.saveLog = new JButton("Save");
 		this.exitLog = new JButton("Exit");
 		this.newLog = new JButton("Clear");
@@ -110,17 +149,21 @@ public class TestLogPanel extends JPanel{
 		exitLog.setToolTipText("Close current log without saving and exit");
 		newLog.setPreferredSize(BUTTON_SZ);
 		newLog.setToolTipText("Close the current log without saving and start new");
-		buttonPanel.add(exitLog);
-		buttonPanel.add(newLog);
-		buttonPanel.add(saveLog);
+		rightButtonPanel.add(exitLog);
+		rightButtonPanel.add(newLog);
+		rightButtonPanel.add(saveLog);
+		
+		buttonPanel.add(leftButtonPanel, BorderLayout.WEST);
+		buttonPanel.add(rightButtonPanel, BorderLayout.EAST);
 		
 		//editorPanel
-		controlPanel.add(newEntryPanel);		
+		controlPanel.add(newEntryPanel);
+		controlPanel.add(newCmdPanel);
 		controlPanel.add(buttonPanel);
 		JScrollPane editorPane = new JScrollPane(editorPanel);
 		editorPane.setPreferredSize(TEXT_SZ);
 		editorPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		JSplitPane contentPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlPanel, editorPane);
+		JSplitPane contentPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorPane, controlPanel);
 		contentPane.setEnabled(false);
 		this.add(contentPane);
 	}

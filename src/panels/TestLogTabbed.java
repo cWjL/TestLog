@@ -16,6 +16,20 @@ public class TestLogTabbed extends JTabbedPane{
 	private static final String CONFIG_LABEL = "Config";
 	public TestLogPanel logPanel;
 	public TestLogConfigPanel configPanel;
+	
+	/**
+	 * Panel constructor
+	 * 
+	 *  @param String title
+	 *  @return none
+	 */
+	public TestLogTabbed(String title){
+		this.logPanel = new TestLogPanel(title);
+		this.configPanel = new TestLogConfigPanel();
+		this.add(LOG_LABEL, this.logPanel);
+		this.add(CONFIG_LABEL, this.configPanel);
+		
+	}
 	/**
 	 * Panel constructor
 	 * 
