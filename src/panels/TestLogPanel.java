@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 /**
  * Main application panel
  * 
@@ -29,6 +30,7 @@ public class TestLogPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 5833830482301963023L;
 	private final Dimension BUTTON_SZ = new Dimension(75,30);
+	private final Dimension COMP_SZ = new Dimension(85, 30);
 	private final Dimension TEXT_SZ = new Dimension(700,500);
 	@SuppressWarnings("unused")
 	private String title;
@@ -40,6 +42,7 @@ public class TestLogPanel extends JPanel{
 	public JTextField newLogEntry;
 	public JComboBox<String> testCaseSelection;
 	public JComboBox<String> testCommandSelection;
+	public JButton addTestCmd;
 	
 	public JButton saveLog;
 	public JButton exitLog;
@@ -95,6 +98,7 @@ public class TestLogPanel extends JPanel{
 		//FileReader reader = null;
 		
 		JPanel controlPanel = new JPanel(new GridLayout(3,1));
+		controlPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		//JPanel controlPanel = new JPanel(new BorderLayout());
 		JPanel editorPanel = new JPanel(new BorderLayout());
 		
@@ -120,15 +124,22 @@ public class TestLogPanel extends JPanel{
 		
 		JLabel newLogLabel = new JLabel("New Log Entry:");
 		this.testCaseSelection = new JComboBox<String>(this.testCases);
+		this.testCaseSelection.setPreferredSize(COMP_SZ);
+		this.testCaseSelection.setToolTipText("Select test command to add to the log");
 		
 		JLabel newCmdLabel = new JLabel("Select Test CMD:");
 		this.testCommandSelection = new JComboBox<String>(this.testCmd);
-		this.testCommandSelection.setPreferredSize(new Dimension(647, 27));
+		this.testCommandSelection.setPreferredSize(new Dimension(563, 27));
 		this.testCommandSelection.setAlignmentX(CENTER_ALIGNMENT);
+		
+		this.addTestCmd = new JButton("Add CMD");
+		this.addTestCmd.setToolTipText("Add the selected command to the log");
+		this.addTestCmd.setPreferredSize(COMP_SZ);
 		
 		JPanel newCmdPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		newCmdPanel.add(newCmdLabel);
 		newCmdPanel.add(this.testCommandSelection);
+		newCmdPanel.add(this.addTestCmd);
 		
 		newEntryPanel.add(newLogLabel);
 		newEntryPanel.add(newLogEntry);

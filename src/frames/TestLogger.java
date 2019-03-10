@@ -10,7 +10,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Vector;
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -180,6 +183,123 @@ public class TestLogger extends JFrame{
 		});
 		
 		/**
+		 * Log tab log text field listener
+		 * 
+		 * Sets logPanel.notSaved to visible and this.saved to false
+		 */
+		tabPane.logPanel.logText.getDocument().addDocumentListener(new DocumentListener(){
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				notifyUser();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				notifyUser();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				notifyUser();
+			}
+			
+			public void notifyUser() {
+				tabPane.logPanel.notSaved.setVisible(true);
+				saved = false;
+			}
+		});
+		
+		/**
+		 * Config tab save button listener
+		 */
+		tabPane.configPanel.saveButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				if(!tabPane.configPanel.cmdsTextField.getText().equals("")){
+					Vector<String> newCMD = new Vector<String>(Arrays.asList(tabPane.configPanel.cmdsTextField.getText().split("\\r?\\n")));
+					Vector<String> oldCMD = new Vector<String>();
+					for(int i = 1; i < tabPane.logPanel.testCommandSelection.getItemCount(); i++){
+						oldCMD.add(tabPane.logPanel.testCommandSelection.getItemAt(i));
+					}
+					
+					if(!oldCMD.equals(newCMD)){
+						int j = 0;
+						oldCMD.clear();
+						oldCMD.add(tabPane.logPanel.testCommandSelection.getItemAt(j++));
+						oldCMD.addAll(j, newCMD);
+						tabPane.logPanel.testCommandSelection.removeAllItems();
+						for(int i = 0; i<oldCMD.size(); i++){
+							tabPane.logPanel.testCommandSelection.addItem(oldCMD.get(i));
+						}
+					}
+				}else{
+					Vector<String> oldTC = new Vector<String>();
+					oldTC.add(tabPane.logPanel.testCommandSelection.getItemAt(0));
+					tabPane.logPanel.testCommandSelection.removeAllItems();
+					tabPane.logPanel.testCommandSelection.addItem(oldTC.get(0));
+				}
+				
+				if(!tabPane.configPanel.tcTextField.getText().equals("")){
+					Vector<String> newTC;
+					Vector<String> oldTC = new Vector<String>();
+					for(int i = 2; i < tabPane.logPanel.testCaseSelection.getItemCount(); i++){
+						oldTC.add(tabPane.logPanel.testCaseSelection.getItemAt(i));
+					}
+					newTC = new Vector<String>(Arrays.asList(tabPane.configPanel.tcTextField.getText().split("\n")));
+
+					if(!oldTC.equals(newTC)){
+						int j = 0;
+						oldTC.clear();
+						oldTC.add(tabPane.logPanel.testCaseSelection.getItemAt(j++));
+						oldTC.add(tabPane.logPanel.testCaseSelection.getItemAt(j++));
+						oldTC.addAll(j, newTC);
+						tabPane.logPanel.testCaseSelection.removeAllItems();
+						for(int i = 0; i<oldTC.size(); i++){
+							tabPane.logPanel.testCaseSelection.addItem(oldTC.get(i));
+						}
+					}
+				}else{
+					Vector<String> oldTC = new Vector<String>();
+					oldTC.add(tabPane.logPanel.testCaseSelection.getItemAt(0));
+					oldTC.add(tabPane.logPanel.testCaseSelection.getItemAt(1));
+					tabPane.logPanel.testCaseSelection.removeAllItems();
+					tabPane.logPanel.testCaseSelection.addItem(oldTC.get(0));
+					tabPane.logPanel.testCaseSelection.addItem(oldTC.get(1));
+				}
+				tabPane.logPanel.testCaseSelection.validate();
+				tabPane.logPanel.testCommandSelection.validate();
+				tabPane.configPanel.notSaved.setVisible(false);
+			}
+		});
+		
+		/**
+		 * Log tab add button listener
+		 */
+		tabPane.logPanel.addTestCmd.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				if(tabPane.logPanel.testCommandSelection.getSelectedIndex() == 0){
+					JOptionPane.showMessageDialog(tabPane.logPanel, "You need to select a command", "Test Log", JOptionPane.OK_OPTION);
+				}else if(tabPane.logPanel.testCaseSelection.getSelectedIndex() == 0){
+					JOptionPane.showMessageDialog(tabPane.logPanel, "You need to select a test case", "Test Log", JOptionPane.OK_OPTION);
+				}else{
+					tabPane.logPanel.logText.append("[ "+TestLogger.this.currentDate.format(new Date())+" ] [ "+tabPane.logPanel.testCaseSelection.getSelectedItem().toString()+" ] "
+							+"[ CMD ] "+tabPane.logPanel.testCommandSelection.getSelectedItem().toString()+'\n');
+					tabPane.logPanel.testCommandSelection.setSelectedIndex(0);
+					saved = false;
+				}
+			}
+		});
+		
+		/**
+		 * Config tab import button listener
+		 */
+		tabPane.configPanel.importButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				
+			}
+		});
+		
+		/**
 		 * Config tab clear button listener
 		 * 
 		 * Shows message box to select which text area to clear
@@ -193,10 +313,12 @@ public class TestLogger extends JFrame{
 				if(clearThis != null) {
 					if(clearThis.toString().equalsIgnoreCase("Test Cases")) {
 						tabPane.configPanel.tcTextField.setText("");
+						tabPane.logPanel.notSaved.setVisible(false);
 						saved = false;
 						//System.out.println(clearThis);
 					}else if(clearThis.toString().equalsIgnoreCase("Test Commands")) {
 						tabPane.configPanel.cmdsTextField.setText("");
+						tabPane.logPanel.notSaved.setVisible(false);
 						saved = false;
 						//System.out.println(clearThis);
 					}
@@ -268,6 +390,7 @@ public class TestLogger extends JFrame{
 					}else {
 						saveAs(TestLogger.this, tabPane.logPanel.logText);
 					}
+					tabPane.logPanel.notSaved.setVisible(false);
 					saved = true;
 				}
 			}
@@ -279,7 +402,7 @@ public class TestLogger extends JFrame{
 		tabPane.logPanel.newLogEntry.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent ae) {
 				if(tabPane.logPanel.testCaseSelection.getSelectedIndex() != 0) {
-					tabPane.logPanel.logText.append("["+TestLogger.this.currentDate.format(new Date())+"] ["+tabPane.logPanel.testCaseSelection.getSelectedItem().toString()+"] "
+					tabPane.logPanel.logText.append("[ "+TestLogger.this.currentDate.format(new Date())+" ] [ "+tabPane.logPanel.testCaseSelection.getSelectedItem().toString()+" ] "
 							+tabPane.logPanel.newLogEntry.getText()+'\n');
 					tabPane.logPanel.newLogEntry.setText("");
 					saved = false;

@@ -13,6 +13,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 /**
  * Main application configuration panel
  * 
@@ -116,10 +117,13 @@ public class TestLogConfigPanel extends JPanel {
 		
 		this.clearButton = new JButton("Clear");
 		this.clearButton.setSize(BUTTON_SZ);
+		this.clearButton.setToolTipText("Clear the selected text area");
 		this.saveButton = new JButton("Save");
 		this.saveButton.setSize(BUTTON_SZ);
+		this.saveButton.setToolTipText("Save the current list");
 		this.importButton = new JButton("Import");
 		this.importButton.setSize(BUTTON_SZ);
+		this.importButton.setToolTipText("Import Test Cases or Test Commands from file");
 		
 		rightButtonPanel.add(importButton);
 		rightButtonPanel.add(saveButton);
@@ -128,6 +132,7 @@ public class TestLogConfigPanel extends JPanel {
 		
 		buttonBasePanel.add(rightButtonPanel, BorderLayout.EAST);
 		buttonBasePanel.add(leftButtonPanel, BorderLayout.WEST);
+		buttonBasePanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		
 		this.add(buttonBasePanel, BorderLayout.SOUTH);
 		this.add(contentPane, BorderLayout.CENTER);

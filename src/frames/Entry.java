@@ -74,7 +74,7 @@ public class Entry extends JFrame{
 		this.newLog.ok.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
 				if(newLog.projTitleText.getText().equals("")){
-					newLog.errorMsg.setText("Project title/Test cases missing");
+					newLog.errorMsg.setText("Project title missing");
 					newLog.errorMsg.setVisible(true);
 					repackFrame();
 				}else if(!newLog.testCaseText.getText().isEmpty() && !newLog.testCaseText.getText().contains(",") && !newLog.testCaseText.getText().contains(" ")){
@@ -218,13 +218,20 @@ public class Entry extends JFrame{
 	 * @return String[] formatted test cases
 	 */
 	private String[] getOpts(String[] woOpts) {
-		String[] newOpts = new String[woOpts.length+2];
+		String[] newOpts;
+		if(woOpts.length == 1 && woOpts[0].equals("")){
+			newOpts = new String[woOpts.length+1];
+		}else{
+			newOpts = new String[woOpts.length+2];
+		}
 		newOpts[0] = "-Select-";
 		newOpts[1] = "Note";
-		int j = 2;
-		for(int i = 0; i<woOpts.length; i++) {
-			newOpts[j] = woOpts[i].replaceFirst("^\\s*", "");
-			j++;
+		if(newOpts.length > 2){
+			int j = 2;
+			for(int i = 0; i<woOpts.length; i++) {
+				newOpts[j] = woOpts[i].replaceFirst("^\\s*", "");
+				j++;
+			}			
 		}
 		return newOpts;
 	}
