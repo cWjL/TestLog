@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.AbstractAction;
@@ -35,7 +36,6 @@ import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import src.panels.TestLogTabbed;
-import src.resources.*;
 
 /**
  * Main application frame
@@ -525,16 +525,28 @@ public class TestLogger extends JFrame{
 	private String[] getTestCommands(File fp) {
 		String[] nope = {"ls", "ls -l", "ls -al",
 				"cd", "dir", "mkdir",
-				"cp", "pwd","whoami"};
+				"cp", "pwd","whoami",
+				"man", "exit", "cat",
+				"touch", "emacs", "uname",
+				"clear", "ip", "service",
+				"rm", "ipconfig", "ifconfig",
+				"apt", "chmod", "gedit"};
 		Vector<String> newCMDS = new Vector<String>();
 		try (BufferedReader input = new BufferedReader(new FileReader(fp))){
 			String line;
 			while((line = input.readLine()) != null) {
-				if(!Arrays.asList(nope).contains(line.trim())) {
+				Boolean found = false;
+				for(int i = 0; i < nope.length; i++) {
+					if(line.contains(nope[i])) {
+						found = true;
+					}
+				}
+				if(!found) {
 					newCMDS.add(line);
 				}
 			}
 			input.close();
+			Collections.sort(newCMDS);
 			return newCMDS.toArray(new String[newCMDS.size()]);
 		}catch (IOException e) {
 			
@@ -612,18 +624,5 @@ public class TestLogger extends JFrame{
 
 		}
 		return false;
-	}
-	
-	/**
-	 * Set frame location to center of screen
-	 * 
-	 * @param frame
-	 * @return none
-	 */
-	public static void centreWindow(JFrame frame) {
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-	    frame.setLocation(x, y);
 	}
 }
