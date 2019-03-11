@@ -2,11 +2,9 @@ package src.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -226,7 +224,6 @@ public class TestLogger extends JFrame{
 		 */
 		tabPane.configPanel.saveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				tabPane.validate();
 				if(!tabPane.configPanel.cmdsTextField.getText().equals("")){
 					Vector<String> newCMD = new Vector<String>(Arrays.asList(tabPane.configPanel.cmdsTextField.getText().split("\\r?\\n")));
 					Vector<String> oldCMD = new Vector<String>();
@@ -278,8 +275,7 @@ public class TestLogger extends JFrame{
 					tabPane.logPanel.testCaseSelection.addItem(oldTC.get(0));
 					tabPane.logPanel.testCaseSelection.addItem(oldTC.get(1));
 				}
-				tabPane.logPanel.testCaseSelection.validate();
-				tabPane.logPanel.testCommandSelection.validate();
+				tabPane.validate();
 				tabPane.configPanel.notSaved.setVisible(false);
 			}
 		});
