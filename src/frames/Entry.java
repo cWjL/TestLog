@@ -39,16 +39,13 @@ public class Entry extends JFrame{
 		/*
 		 * Initial frame view with mode select panel
 		 */
-		ImageIcon h_well_img = new ImageIcon("resources/honeywell-sec-scaled-50-44.png");
-		
-		this.setIconImage(h_well_img.getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/src/resources/h_well_frame_icon.png")).getImage());
 		this.setTitle("Test Log");
 		
 		/* kill on frame exit */
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter(){
 				public void windowClosing(WindowEvent e){
-					
 					e.getWindow().dispose();
 					System.exit(0);
 				}
@@ -269,7 +266,6 @@ public class Entry extends JFrame{
 	 */
 	private void launchLogger(String title, String[] testCases, File fp){
 		final String lafClassName = getLookAndFeelClassName("Nimbus");
-		
 		SwingUtilities.invokeLater(new Runnable(){	// launch UI in AWT event-dispatching thread
 			public void run(){
 				try{

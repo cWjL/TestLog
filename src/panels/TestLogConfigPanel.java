@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,8 +29,8 @@ public class TestLogConfigPanel extends JPanel {
 	/**
 	 * Class variables
 	 */
-	private static final String TEST_CASE = "Test Cases";
-	private static final String TEST_CMDS = "Test Commands";
+	private String TEST_CASE = "Test Cases";
+	private String TEST_CMDS = "Test Commands";
 	private final Dimension TC_TEXT_SZ = new Dimension(350,500);
 	private final Dimension CMD_TEXT_SZ = new Dimension(350,500);
 	private final Dimension BUTTON_SZ = new Dimension(75,30);
@@ -81,7 +83,9 @@ public class TestLogConfigPanel extends JPanel {
 	public void showPanel() {
 		this.cmdsTextField = new JTextArea();
 		this.TEST_CASE_LABEL = new JLabel(TEST_CASE, SwingConstants.CENTER);
+		this.TEST_CASE_LABEL.setFont(new Font("", Font.BOLD, 20));
 		this.TEST_CMD_LABEL = new JLabel(TEST_CMDS, SwingConstants.CENTER);
+		this.TEST_CMD_LABEL.setFont(new Font("", Font.BOLD, 20));
 		this.notSaved = new JLabel("\u2022 Unsaved Changes");
 		this.notSaved.setForeground(Color.RED);
 		

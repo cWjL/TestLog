@@ -1,11 +1,20 @@
 package src.frames;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -13,16 +22,20 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import src.panels.TestLogTabbed;
+import src.resources.*;
 
 /**
  * Main application frame
@@ -93,9 +106,7 @@ public class TestLogger extends JFrame{
 	 */
 	@SuppressWarnings("serial")
 	public void showUI(){
-		//Boolean saved = false;
-		ImageIcon h_well_img = new ImageIcon("resources/honeywell-sec-scaled-50-44.png");
-		this.setIconImage(h_well_img.getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/src/resources/h_well_frame_icon.png")).getImage());
 		this.setTitle("Test Log");
 		
 		/* kill on frame exit */
@@ -118,7 +129,6 @@ public class TestLogger extends JFrame{
 			tabPane.logPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
 		}
 
-		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 
 		tabPane.configPanel.notSaved.setVisible(false);
@@ -126,6 +136,7 @@ public class TestLogger extends JFrame{
 		
 		this.setContentPane(tabPane);
 		this.pack();
+		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
 		/**
@@ -215,6 +226,7 @@ public class TestLogger extends JFrame{
 		 */
 		tabPane.configPanel.saveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
+				tabPane.validate();
 				if(!tabPane.configPanel.cmdsTextField.getText().equals("")){
 					Vector<String> newCMD = new Vector<String>(Arrays.asList(tabPane.configPanel.cmdsTextField.getText().split("\\r?\\n")));
 					Vector<String> oldCMD = new Vector<String>();
@@ -295,9 +307,96 @@ public class TestLogger extends JFrame{
 		 */
 		tabPane.configPanel.importButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				
+				String[] options = {"Test Cases","Test Commands"};
+				EventQueue.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						Object importThis;
+						importThis = JOptionPane.showInputDialog(null, null, "Import What? ",
+								JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+						if(importThis != null) {
+							JFileChooser fc = new JFileChooser();
+							if(fc.showOpenDialog(tabPane) == JFileChooser.APPROVE_OPTION) {
+								File file = fc.getSelectedFile();
+								if(checkFile(file)) {
+									Frame frame = Frame.getFrames()[0];
+								    final JDialog loading = new JDialog(frame);
+								    JLabel waitLabel = new JLabel("Please wait...");
+								    waitLabel.setForeground(Color.RED);
+								    waitLabel.setFont(new Font("",Font.PLAIN, 20));
+								    JPanel p1 = new JPanel(new BorderLayout(10,10));
+								    p1.add(waitLabel, BorderLayout.CENTER);
+								    loading.setUndecorated(true);
+								    loading.getContentPane().add(p1);
+								    loading.pack();
+								    loading.setLocationRelativeTo(tabPane);
+								    loading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+								    loading.setModal(true);
+									if(importThis.toString().equalsIgnoreCase("Test Cases")) {
+									    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+									    	String[] newcmds;
+									        @Override
+									        protected Void doInBackground() throws InterruptedException {
+									        	newcmds = getTestCommands(file);
+									        	return null;
+									        }
+									        @Override
+									        protected void done() {
+									        	if(newcmds != null) {
+									        		for(int i = 0; i < newcmds.length; i++) {
+									        			tabPane.configPanel.tcTextField.append(newcmds[i]+'\n');
+									        		}
+									        	}
+									            loading.dispose();
+									        }
+									    };
+									    worker.execute();
+									    loading.setVisible(true);
+									    try {
+									        worker.get();
+									    } catch (Exception e1) {
+									        e1.printStackTrace();
+									    }
+										
+									}else if(importThis.toString().equalsIgnoreCase("Test Commands")) {
+									    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+									    	String[] newcmds;
+									        @Override
+									        protected Void doInBackground() throws InterruptedException {
+									        	newcmds = getTestCommands(file);
+									        	return null;
+									        }
+									        @Override
+									        protected void done() {
+									        	if(newcmds != null) {
+									        		for(int i = 0; i < newcmds.length; i++) {
+									        			tabPane.configPanel.cmdsTextField.append(newcmds[i]+'\n');
+									        		}
+									        	}
+									            loading.dispose();
+									        }
+									    };
+									    worker.execute();
+									    loading.setVisible(true);
+									    try {
+									        worker.get();
+									    } catch (Exception e1) {
+									        e1.printStackTrace();
+									    }
+									}
+								}
+							}
+						}
+					}
+				});
+				tabPane.validate();
 			}
 		});
+		
+		/**
+		 * Config tab drag and drop
+		 */
+		//tabPane.configPanel.cmdsTextField
 		
 		/**
 		 * Config tab clear button listener
@@ -307,22 +406,26 @@ public class TestLogger extends JFrame{
 		tabPane.configPanel.clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String[] options = {"Test Cases","Test Commands"};
-				Object clearThis = JOptionPane.showInputDialog(null, null, "Clear What? ",
-						JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-				if(clearThis != null) {
-					if(clearThis.toString().equalsIgnoreCase("Test Cases")) {
-						tabPane.configPanel.tcTextField.setText("");
-						tabPane.logPanel.notSaved.setVisible(false);
-						saved = false;
-						//System.out.println(clearThis);
-					}else if(clearThis.toString().equalsIgnoreCase("Test Commands")) {
-						tabPane.configPanel.cmdsTextField.setText("");
-						tabPane.logPanel.notSaved.setVisible(false);
-						saved = false;
-						//System.out.println(clearThis);
+				EventQueue.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						Object clearThis = JOptionPane.showInputDialog(null, null, "Clear What? ",
+								JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+						if(clearThis != null) {
+							if(clearThis.toString().equalsIgnoreCase("Test Cases")) {
+								tabPane.configPanel.tcTextField.setText("");
+								tabPane.logPanel.notSaved.setVisible(false);
+								saved = false;
+								//System.out.println(clearThis);
+							}else if(clearThis.toString().equalsIgnoreCase("Test Commands")) {
+								tabPane.configPanel.cmdsTextField.setText("");
+								tabPane.logPanel.notSaved.setVisible(false);
+								saved = false;
+							}
+						}
 					}
-				}
+				});
+				tabPane.validate();
 			}
 		});
 		
@@ -414,6 +517,33 @@ public class TestLogger extends JFrame{
 	}
 	
 	/**
+	 * Retrieves test commands from file
+	 * 
+	 * @param File file
+	 * @return String[] test commands
+	 */
+	private String[] getTestCommands(File fp) {
+		String[] nope = {"ls", "ls -l", "ls -al",
+				"cd", "dir", "mkdir",
+				"cp", "pwd","whoami"};
+		Vector<String> newCMDS = new Vector<String>();
+		try (BufferedReader input = new BufferedReader(new FileReader(fp))){
+			String line;
+			while((line = input.readLine()) != null) {
+				if(!Arrays.asList(nope).contains(line.trim())) {
+					newCMDS.add(line);
+				}
+			}
+			input.close();
+			return newCMDS.toArray(new String[newCMDS.size()]);
+		}catch (IOException e) {
+			
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Builds comma separated string representation of string array
 	 * @param String[] arr
 	 * @return String 
@@ -462,5 +592,38 @@ public class TestLogger extends JFrame{
 			e.printStackTrace();
 		  }
 		}
+	}
+	
+	/**
+	 * Check input file format
+	 * 
+	 * @param File file pointer to 
+	 * @return boolean file is valid
+	 */	
+	private boolean checkFile(File fp) {
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(fp));
+			if(fp.getAbsolutePath().endsWith(".txt")) {
+				input.close();
+				return true;
+			}
+			input.close();
+		} catch (IOException e) {
+
+		}
+		return false;
+	}
+	
+	/**
+	 * Set frame location to center of screen
+	 * 
+	 * @param frame
+	 * @return none
+	 */
+	public static void centreWindow(JFrame frame) {
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+	    frame.setLocation(x, y);
 	}
 }
