@@ -412,7 +412,7 @@ public class TestLogger extends JFrame{
 									        protected void done() {
 									        	if(newcmds != null) {
 									        		for(int i = 0; i < newcmds.length; i++) {
-									        			tabPane.configPanel.tcTextField.append(newcmds[i].replaceAll("\\]", "|").replaceAll("\\[", "|")+'\n');
+									        			tabPane.configPanel.tcTextField.append(newcmds[i]+'\n');
 									        		}
 									        	}
 									            loading.dispose();
@@ -438,7 +438,7 @@ public class TestLogger extends JFrame{
 									        protected void done() {
 									        	if(newcmds != null) {
 									        		for(int i = 0; i < newcmds.length; i++) {
-									        			tabPane.configPanel.cmdsTextField.append(newcmds[i].replaceAll("\\[", "|").replaceAll("\\]", "|")+'\n');
+									        			tabPane.configPanel.cmdsTextField.append(newcmds[i]+'\n');
 									        		}
 									        	}
 									            loading.dispose();
@@ -610,7 +610,7 @@ public class TestLogger extends JFrame{
 					}
 				}
 				if(!found) {
-					newCMDS.add(line);
+					newCMDS.add(line.replaceAll("\\[", "|").replaceAll("\\]", "|"));
 				}
 			}
 			input.close();
