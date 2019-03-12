@@ -12,6 +12,8 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -33,6 +38,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+
 import src.panels.TestLogTabbed;
 
 /**
@@ -127,11 +138,9 @@ public class TestLogger extends JFrame{
 			tabPane.logPanel.logText.append(this.title+" Test Log Continued: "+this.currentDate.format(new Date())+'\n');
 		}
 
-		this.setResizable(false);
-
 		tabPane.configPanel.notSaved.setVisible(false);
 		tabPane.logPanel.notSaved.setVisible(false);
-		
+		this.setResizable(false);		
 		this.setContentPane(tabPane);
 		this.pack();
 		this.setLocationRelativeTo(null);
@@ -299,6 +308,69 @@ public class TestLogger extends JFrame{
 		});
 		
 		/**
+		 * Log tab export button listener
+		 */
+		tabPane.logPanel.export.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				HSSFWorkbook workbook = new HSSFWorkbook();
+				HSSFSheet sheet = workbook.createSheet("Commands");
+				Map<String, Object[]> cmds = new HashMap<String, Object[]>();
+				Boolean cmdFound = false;
+				int i = 1;
+				
+				cmds.put(Integer.toString(i), new Object[] {"Test Case", "Date/Time", "Command"});
+				for(String line : tabPane.logPanel.logText.getText().split("\\n")) {
+					if(!line.contains("@") && !line.contains("Test Log Continued")) {
+						String cmd;
+						//System.out.println(line.substring((line.lastIndexOf("[")+1), line.lastIndexOf("]")).trim());
+						if(line.substring((line.lastIndexOf("[")+1), line.lastIndexOf("]")).trim().equals("CMD")) {
+							i++;
+							cmd = line.substring(line.lastIndexOf("]")+2);
+							String tc = line.substring((line.indexOf("[", line.indexOf("[")+1)+2), (line.indexOf("]", line.indexOf("]")+1)));
+							String dateTime = line.substring((line.indexOf("[")+2), (line.indexOf("]")-1));
+							cmds.put(Integer.toString(i), new Object[] {tc, dateTime, cmd});
+							
+							Set<String> keyset = cmds.keySet();
+							int rownum = 0;
+							for(String key : keyset) {
+								Row row = sheet.createRow(rownum++);
+								Object[] objarr = cmds.get(key);
+								int cellnum = 0;
+								for(Object obj : objarr) {
+									Cell cell = row.createCell(cellnum++);
+									if(obj instanceof Date) 
+										cell.setCellValue((Date)obj);
+									else if(obj instanceof Boolean)
+										cell.setCellValue((Boolean)obj);
+									else if(obj instanceof String)
+										cell.setCellValue((String)obj);
+									else if(obj instanceof Double)
+										cell.setCellValue((Double)obj);
+								}
+							}
+							try {
+								FileOutputStream out = new FileOutputStream(new File(TestLogger.this.title+".xls"));
+								workbook.write(out);
+								out.close();
+								workbook.close();
+								cmdFound = true;
+							} catch (FileNotFoundException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				if(!cmdFound) {
+					JOptionPane.showMessageDialog(tabPane.logPanel, "No test commands found in log", "Test Log", JOptionPane.OK_OPTION);
+				}else {
+					JOptionPane.showMessageDialog(tabPane.logPanel, "Export complete", "Test Log", JOptionPane.OK_OPTION);
+				}
+			}
+		});
+		
+		/**
 		 * Config tab import button listener
 		 */
 		tabPane.configPanel.importButton.addActionListener(new ActionListener(){
@@ -340,7 +412,7 @@ public class TestLogger extends JFrame{
 									        protected void done() {
 									        	if(newcmds != null) {
 									        		for(int i = 0; i < newcmds.length; i++) {
-									        			tabPane.configPanel.tcTextField.append(newcmds[i]+'\n');
+									        			tabPane.configPanel.tcTextField.append(newcmds[i].replaceAll("\\]", "|").replaceAll("\\[", "|")+'\n');
 									        		}
 									        	}
 									            loading.dispose();
@@ -366,7 +438,7 @@ public class TestLogger extends JFrame{
 									        protected void done() {
 									        	if(newcmds != null) {
 									        		for(int i = 0; i < newcmds.length; i++) {
-									        			tabPane.configPanel.cmdsTextField.append(newcmds[i]+'\n');
+									        			tabPane.configPanel.cmdsTextField.append(newcmds[i].replaceAll("\\[", "|").replaceAll("\\]", "|")+'\n');
 									        		}
 									        	}
 									            loading.dispose();
@@ -502,7 +574,7 @@ public class TestLogger extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				if(tabPane.logPanel.testCaseSelection.getSelectedIndex() != 0) {
 					tabPane.logPanel.logText.append("[ "+TestLogger.this.currentDate.format(new Date())+" ] [ "+tabPane.logPanel.testCaseSelection.getSelectedItem().toString()+" ] "
-							+tabPane.logPanel.newLogEntry.getText()+'\n');
+							+tabPane.logPanel.newLogEntry.getText().replaceAll("\\[", "|").replaceAll("\\]", "|")+'\n');
 					tabPane.logPanel.newLogEntry.setText("");
 					saved = false;
 				}else{

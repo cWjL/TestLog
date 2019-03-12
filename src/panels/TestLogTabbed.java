@@ -54,8 +54,9 @@ public class TestLogTabbed extends JTabbedPane{
 	 */
 	public TestLogTabbed(String title, String[] testCases, File fp){
 		this.logPanel = new TestLogPanel(title, testCases, fp);
+		this.configPanel = new TestLogConfigPanel(testCases);
 		this.add(LOG_LABEL, this.logPanel);
-		this.add(CONFIG_LABEL, this.logPanel);		
+		this.add(CONFIG_LABEL, this.configPanel);		
 	}
 	
 	/**

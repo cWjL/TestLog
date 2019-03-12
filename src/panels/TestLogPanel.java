@@ -47,6 +47,7 @@ public class TestLogPanel extends JPanel{
 	public JButton saveLog;
 	public JButton exitLog;
 	public JButton newLog;
+	public JButton export;
 	
 	/**
 	 * Panel constructor
@@ -148,18 +149,23 @@ public class TestLogPanel extends JPanel{
 		JPanel buttonPanel = new JPanel(new BorderLayout());
 		
 		JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		this.export = new JButton("Export");
+		this.export.setPreferredSize(BUTTON_SZ);
+		this.export.setToolTipText("Export test commands to spreadsheet");
+		leftButtonPanel.add(export);
 		leftButtonPanel.add(this.notSaved);
+		
 
 		JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		this.saveLog = new JButton("Save");
 		this.exitLog = new JButton("Exit");
 		this.newLog = new JButton("Clear");
-		saveLog.setPreferredSize(BUTTON_SZ);
-		saveLog.setToolTipText("Save the current log");
-		exitLog.setPreferredSize(BUTTON_SZ);
-		exitLog.setToolTipText("Close current log without saving and exit");
-		newLog.setPreferredSize(BUTTON_SZ);
-		newLog.setToolTipText("Close the current log without saving and start new");
+		this.saveLog.setPreferredSize(BUTTON_SZ);
+		this.saveLog.setToolTipText("Save the current log");
+		this.exitLog.setPreferredSize(BUTTON_SZ);
+		this.exitLog.setToolTipText("Close current log without saving and exit");
+		this.newLog.setPreferredSize(BUTTON_SZ);
+		this.newLog.setToolTipText("Close the current log without saving and start new");
 		rightButtonPanel.add(exitLog);
 		rightButtonPanel.add(newLog);
 		rightButtonPanel.add(saveLog);
