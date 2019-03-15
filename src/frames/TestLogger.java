@@ -280,6 +280,7 @@ public class TestLogger extends JFrame{
 						for(int i = 0; i<oldTC.size(); i++){
 							tabPane.logPanel.testCaseSelection.addItem(oldTC.get(i));
 						}
+						tabPane.logPanel.notSaved.setVisible(true);
 					}
 				}else{
 					Vector<String> oldTC = new Vector<String>();
@@ -324,8 +325,8 @@ public class TestLogger extends JFrame{
 				int i = 1;
 				
 				cmds.put(Integer.toString(i), new Object[] {"Test Case", "Date/Time", "Command"});
-				for(String line : tabPane.logPanel.logText.getText().split("\\n")) {
-					if(!line.contains("@") && !line.contains("Test Log Continued")) {
+				for(String line : tabPane.logPanel.logText.getText().split("\n")) {
+					if(!line.contains("@") && !line.contains("Test Log Continued") && !line.contains("Test Log Finished")) {
 						String cmd;
 						//System.out.println(line.substring((line.lastIndexOf("[")+1), line.lastIndexOf("]")).trim());
 						if(line.substring((line.lastIndexOf("[")+1), line.lastIndexOf("]")).trim().equals("CMD")) {
@@ -343,29 +344,23 @@ public class TestLogger extends JFrame{
 								int cellnum = 0;
 								for(Object obj : objarr) {
 									Cell cell = row.createCell(cellnum++);
-									if(obj instanceof Date) 
-										cell.setCellValue((Date)obj);
-									else if(obj instanceof Boolean)
-										cell.setCellValue((Boolean)obj);
-									else if(obj instanceof String)
-										cell.setCellValue((String)obj);
-									else if(obj instanceof Double)
-										cell.setCellValue((Double)obj);
+									cell.setCellValue((String)obj);
 								}
 							}
-							try {
-								FileOutputStream out = new FileOutputStream(new File(TestLogger.this.title+".xls"));
-								workbook.write(out);
-								out.close();
-								workbook.close();
-								cmdFound = true;
-							} catch (FileNotFoundException e) {
-								e.printStackTrace();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+
 						}
 					}
+				}
+				try {
+					FileOutputStream out = new FileOutputStream(new File(TestLogger.this.title+".xls"));
+					workbook.write(out);
+					out.close();
+					workbook.close();
+					cmdFound = true;
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				if(!cmdFound) {
 					JOptionPane.showMessageDialog(tabPane.logPanel, "No test commands found in log", "Test Log", JOptionPane.OK_OPTION);
@@ -416,15 +411,28 @@ public class TestLogger extends JFrame{
 									        @Override
 									        protected void done() {
 									        	if(newcmds != null) {
-									        		Vector<String> swap = new Vector<String>(Arrays.asList(tabPane.logPanel.logText.getText().split("\n")));
-									        		String[] swapStr = swap.get(0).substring(swap.get(0).indexOf("<")+1, swap.get(0).indexOf(">")).split(",");
-									        		System.out.println(swapStr.length);
+									        		Vector<String> swap = new Vector<String>();
+									        		
+									        		String[] logText = tabPane.logPanel.logText.getText().split("\n"); //get log text as array
+									        		String[] swapStr = logText[0].substring(logText[0].indexOf("<")+1, logText[0].indexOf(">")).split(","); //get current test cases
+									        		int j =0;
+									        		swap.add(swapStr[j++]);
+									        		swap.add(swapStr[j++]);
+
 									        		for(int i = 0; i < newcmds.length; i++) {
 									        			tabPane.configPanel.tcTextField.append(newcmds[i]+'\n');
 									        		}
-									        		
-									        		//System.out.println(swapStr);
-									        		//tabPane.logPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+									        		String[] curTC = tabPane.configPanel.tcTextField.getText().split("\n");
+									        		for(int i = 0; i<curTC.length; i++) {
+									        			swap.add(curTC[i]);
+									        		}
+									        		String tmp = logText[0].substring(0, logText[0].indexOf("@")+2)+buildEmbedString(swap.toArray(new String[swap.size()]))+
+									        				logText[0].substring(logText[0].indexOf(">"), logText[0].length()); //build new title bar with new test cases
+									        		logText[0] = tmp;
+									        		tabPane.logPanel.logText.setText("");
+									        		for(String str : logText) {
+									        			tabPane.logPanel.logText.append(str+'\n');
+									        		}
 									        	}
 									            loading.dispose();
 									        }
@@ -493,9 +501,25 @@ public class TestLogger extends JFrame{
 						if(clearThis != null) {
 							if(clearThis.toString().equalsIgnoreCase("Test Cases")) {
 								tabPane.configPanel.tcTextField.setText("");
+								
+				        		Vector<String> swap = new Vector<String>();
+				        		
+				        		String[] logText = tabPane.logPanel.logText.getText().split("\n"); //get log text as array
+				        		String[] swapStr = logText[0].substring(logText[0].indexOf("<")+1, logText[0].indexOf(">")).split(","); //get current test cases
+				        		int j =0;
+				        		swap.add(swapStr[j++]);
+				        		swap.add(swapStr[j++]);
+
+				        		String tmp = logText[0].substring(0, logText[0].indexOf("@")+2)+buildEmbedString(swap.toArray(new String[swap.size()]))+
+				        				logText[0].substring(logText[0].indexOf(">"), logText[0].length()); //build new title bar with new test cases
+				        		logText[0] = tmp;
+				        		tabPane.logPanel.logText.setText("");
+				        		for(String str : logText) {
+				        			tabPane.logPanel.logText.append(str+'\n');
+				        		}
+				        		
 								tabPane.logPanel.notSaved.setVisible(false);
 								saved = false;
-								//System.out.println(clearThis);
 							}else if(clearThis.toString().equalsIgnoreCase("Test Commands")) {
 								tabPane.configPanel.cmdsTextField.setText("");
 								tabPane.logPanel.notSaved.setVisible(false);
@@ -568,13 +592,13 @@ public class TestLogger extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				if(!saved) {
 					if(TestLogger.this.out != null) {
-						save(tabPane.logPanel.logText);
+						saved = save(tabPane.logPanel.logText);
 					}else {
-						saveAs(TestLogger.this, tabPane.logPanel.logText);
+						saved = saveAs(TestLogger.this, tabPane.logPanel.logText);
 					}
-					tabPane.logPanel.notSaved.setVisible(false);
-					saved = true;
+					
 				}
+				if(saved) {tabPane.logPanel.notSaved.setVisible(false);}
 			}
 		});
 		
@@ -658,12 +682,14 @@ public class TestLogger extends JFrame{
 	 * @return none
 	 * @exception IOException
 	 */
-	private void save(JTextArea text) {
+	private Boolean save(JTextArea text) {
 		try(BufferedWriter fileOut = new BufferedWriter(new FileWriter(this.out))){
 			text.write(fileOut);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	/**
@@ -673,16 +699,18 @@ public class TestLogger extends JFrame{
 	 * @param JTextArea to save
 	 * @exception IOException
 	 */
-	private void saveAs(JFrame frame, JTextArea text) {
+	private Boolean saveAs(JFrame frame, JTextArea text) {
 		JFileChooser fileChooser = new JFileChooser();
 		if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
 		  this.out = fileChooser.getSelectedFile();
 		  try(BufferedWriter fileOut = new BufferedWriter(new FileWriter(this.out))){
 			  text.write(fileOut);
+			  return true;
 		  } catch (IOException e) {
 			e.printStackTrace();
 		  }
 		}
+		return false;
 	}
 	
 	/**
