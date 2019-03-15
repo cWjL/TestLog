@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -57,6 +60,8 @@ public class TestLogger extends JFrame{
 	 * Class variables
 	 */
 	private static final long serialVersionUID = 6998372573965893306L;
+	private final Logger logger = Logger.getLogger(TestLogger.class.getName());
+	private FileHandler fh = null;
 	private String title;
 	private String[] testCase;
 	
@@ -411,9 +416,15 @@ public class TestLogger extends JFrame{
 									        @Override
 									        protected void done() {
 									        	if(newcmds != null) {
+									        		Vector<String> swap = new Vector<String>(Arrays.asList(tabPane.logPanel.logText.getText().split("\n")));
+									        		String[] swapStr = swap.get(0).substring(swap.get(0).indexOf("<")+1, swap.get(0).indexOf(">")).split(",");
+									        		System.out.println(swapStr.length);
 									        		for(int i = 0; i < newcmds.length; i++) {
 									        			tabPane.configPanel.tcTextField.append(newcmds[i]+'\n');
 									        		}
+									        		
+									        		//System.out.println(swapStr);
+									        		//tabPane.logPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
 									        	}
 									            loading.dispose();
 									        }
