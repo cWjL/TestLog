@@ -320,11 +320,11 @@ public class TestLogger extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				HSSFWorkbook workbook = new HSSFWorkbook();
 				HSSFSheet sheet = workbook.createSheet("Commands");
-				Map<String, Object[]> cmds = new HashMap<String, Object[]>();
+				Map<Integer, Object[]> cmds = new HashMap<Integer, Object[]>();
 				Boolean cmdFound = false;
 				int i = 1;
 				
-				cmds.put(Integer.toString(i), new Object[] {"Test Case", "Date/Time", "Command"});
+				cmds.put(i, new Object[] {"Test Case", "Date/Time", "Command"});
 				for(String line : tabPane.logPanel.logText.getText().split("\n")) {
 					if(!line.contains("@") && !line.contains("Test Log Continued") && !line.contains("Test Log Finished")) {
 						String cmd;
@@ -334,21 +334,19 @@ public class TestLogger extends JFrame{
 							cmd = line.substring(line.lastIndexOf("]")+2);
 							String tc = line.substring((line.indexOf("[", line.indexOf("[")+1)+2), (line.indexOf("]", line.indexOf("]")+1)));
 							String dateTime = line.substring((line.indexOf("[")+2), (line.indexOf("]")-1));
-							cmds.put(Integer.toString(i), new Object[] {tc, dateTime, cmd});
-							
-							Set<String> keyset = cmds.keySet();
-							int rownum = 0;
-							for(String key : keyset) {
-								Row row = sheet.createRow(rownum++);
-								Object[] objarr = cmds.get(key);
-								int cellnum = 0;
-								for(Object obj : objarr) {
-									Cell cell = row.createCell(cellnum++);
-									cell.setCellValue((String)obj);
-								}
-							}
-
+							cmds.put(i, new Object[] {tc, dateTime, cmd});
 						}
+					}
+				}
+				Set<Integer> keyset = cmds.keySet();
+				int rownum = 0;
+				for(int key : keyset) {
+					Row row = sheet.createRow(rownum++);
+					Object[] objarr = cmds.get(key);
+					int cellnum = 0;
+					for(Object obj : objarr) {
+						Cell cell = row.createCell(cellnum++);
+						cell.setCellValue((String)obj);
 					}
 				}
 				try {
