@@ -280,6 +280,28 @@ public class TestLogger extends JFrame{
 						for(int i = 0; i<oldTC.size(); i++){
 							tabPane.logPanel.testCaseSelection.addItem(oldTC.get(i));
 						}
+						
+		        		Vector<String> swap = new Vector<String>();
+		        		
+		        		String[] logText = tabPane.logPanel.logText.getText().split("\n"); //get log text as array
+		        		String[] swapStr = logText[0].substring(logText[0].indexOf("<")+1, logText[0].indexOf(">")).split(","); //get current test cases
+
+		        		j =0;
+		        		swap.add(swapStr[j++]);
+		        		swap.add(swapStr[j++]);
+
+		        		String[] curTC = tabPane.configPanel.tcTextField.getText().split("\n");
+		        		for(int i = 0; i<curTC.length; i++) {
+		        			swap.add(curTC[i]);
+		        		}
+		        		String tmp = logText[0].substring(0, logText[0].indexOf("@")+2)+buildEmbedString(swap.toArray(new String[swap.size()]))+
+		        				logText[0].substring(logText[0].indexOf(">"), logText[0].length()); //build new title bar with new test cases
+		        		logText[0] = tmp;
+		        		tabPane.logPanel.logText.setText("");
+		        		for(String str : logText) {
+		        			tabPane.logPanel.logText.append(str+'\n');
+		        		}
+						
 						tabPane.logPanel.notSaved.setVisible(true);
 					}
 				}else{
