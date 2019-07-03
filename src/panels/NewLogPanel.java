@@ -1,4 +1,4 @@
-package src.panels;
+package panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,7 +25,8 @@ public class NewLogPanel extends JPanel{
 	public JButton ok;
 	public JButton open;
 	public JTextField projTitleText;
-	public JTextField testCaseText;
+	public JTextField testerText;
+	public JTextField testerRoleText;
 	public JLabel errorMsg;
 	
 	/**
@@ -37,10 +38,12 @@ public class NewLogPanel extends JPanel{
 	public NewLogPanel(){
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		JPanel projectPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-		JPanel testCasePanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		JPanel testerPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		JPanel testerRolePanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 		JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JLabel projTitle = new JLabel("Project Name:");
-		JLabel testCases = new JLabel("Test Cases:");
+		JLabel tester = new JLabel("Tester Name:");
+		JLabel testerRole = new JLabel("Tester Role:");
 		this.cancel = new JButton("Cancel");
 		this.cancel.setToolTipText("Exit application");
 		this.cancel.setPreferredSize(BUTTON_SZ);
@@ -55,9 +58,11 @@ public class NewLogPanel extends JPanel{
 		
 		this.projTitleText = new JTextField(20);
 		this.projTitleText.setToolTipText("Enter the title of the project/product under test");
-		this.testCaseText = new JTextField(20);
-		this.testCaseText.setToolTipText("Enter test cases as comma separated list. Leave blank for no test case labeling");
-		this.errorMsg = new JLabel("ERROR");
+		this.testerText = new JTextField(20);
+		this.testerText.setToolTipText("Enter tester name");
+		this.testerRoleText = new JTextField(20);
+		this.testerRoleText.setToolTipText("Enter tester title");
+		this.errorMsg = new JLabel("");
 		
 		this.errorMsg.setForeground(Color.RED);
 		this.errorMsg.setVisible(false);
@@ -66,8 +71,11 @@ public class NewLogPanel extends JPanel{
 		buttonPanel.add(this.cancel);
 		buttonPanel.add(this.ok);
 		
-		testCasePanel.add(testCases);
-		testCasePanel.add(testCaseText);
+		testerPanel.add(tester);
+		testerPanel.add(testerText);
+		
+		testerRolePanel.add(testerRole);
+		testerRolePanel.add(testerRoleText);
 		
 		projectPanel.add(projTitle);
 		projectPanel.add(projTitleText);
@@ -78,7 +86,8 @@ public class NewLogPanel extends JPanel{
 
 		this.add(errorPanel);
 		this.add(projectPanel);
-		this.add(testCasePanel);
+		this.add(testerPanel);
+		this.add(testerRolePanel);
 		this.add(buttonPanel);
 	}
 }

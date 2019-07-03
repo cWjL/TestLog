@@ -1,4 +1,4 @@
-package src.panels;
+package panels;
 
 import java.io.File;
 import javax.swing.JTabbedPane;

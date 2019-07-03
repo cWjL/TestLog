@@ -1,4 +1,4 @@
-package src.frames;
+package frames;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,8 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import src.panels.NewLogPanel;
+import panels.NewLogPanel;
+import frames.TestLogger;
 
 /**
  * Initial landing frame.  Main calls Entry.java frame which adds NewLogPanel.java panel
@@ -39,7 +40,7 @@ public class Entry extends JFrame{
 		/*
 		 * Initial frame view with mode select panel
 		 */
-		this.setIconImage(new ImageIcon(getClass().getResource("/src/resources/h_well_frame_icon.png")).getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/resources/h_well_frame_icon.png")).getImage());
 		this.setTitle("Test Log");
 		
 		/* kill on frame exit */
@@ -74,13 +75,19 @@ public class Entry extends JFrame{
 					newLog.errorMsg.setText("Project title missing");
 					newLog.errorMsg.setVisible(true);
 					repackFrame();
-				}else if(!newLog.testCaseText.getText().isEmpty() && !newLog.testCaseText.getText().contains(",") && !newLog.testCaseText.getText().contains(" ")){
-					newLog.errorMsg.setText("Enter test cases as comma separated list");
+				}else if(newLog.testerText.getText().isEmpty()){
+					newLog.errorMsg.setText("Tester name missing");
+					newLog.errorMsg.setVisible(true);
+					repackFrame();
+				}else if(newLog.testerRoleText.getText().isEmpty()){
+					newLog.errorMsg.setText("Tester role missing");
 					newLog.errorMsg.setVisible(true);
 					repackFrame();
 				}else{
 					Entry.this.dispose();
-					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), getOpts(newLog.testCaseText.getText().replaceAll("@", "").split(",")), null);
+					// launchLogger needs to be changed to take tester name and role as parameters
+					// getOpts needs to be changed to remove the Test Case capture
+					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), getOpts(newLog.testerText.getText().replaceAll("@", "").split(",")), null);
 				}
 			}
 		});
@@ -99,7 +106,21 @@ public class Entry extends JFrame{
 			}
 		});
 		
-		this.newLog.testCaseText.addFocusListener(new FocusListener(){
+		this.newLog.testerText.addFocusListener(new FocusListener(){
+			@Override
+			public void focusGained(FocusEvent e) {
+				newLog.errorMsg.setText("");
+				newLog.errorMsg.setVisible(false);
+				repackFrame();
+				
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				
+			}
+		});
+		
+		this.newLog.testerRoleText.addFocusListener(new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent e) {
 				newLog.errorMsg.setText("");

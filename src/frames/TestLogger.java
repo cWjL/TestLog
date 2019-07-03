@@ -1,4 +1,4 @@
-package src.frames;
+package frames;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -47,7 +47,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
-import src.panels.TestLogTabbed;
+import panels.TestLogTabbed;
 
 /**
  * Main application frame
@@ -120,7 +120,7 @@ public class TestLogger extends JFrame{
 	 */
 	@SuppressWarnings("serial")
 	public void showUI(){
-		this.setIconImage(new ImageIcon(getClass().getResource("/src/resources/h_well_frame_icon.png")).getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/resources/h_well_frame_icon.png")).getImage());
 		this.setTitle("Test Log");
 		
 		/* kill on frame exit */
