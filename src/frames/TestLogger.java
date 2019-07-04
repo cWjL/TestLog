@@ -64,6 +64,8 @@ public class TestLogger extends JFrame{
 	private FileHandler fh = null;
 	private String title;
 	private String[] testCase;
+	private String tester;
+	private String testerRole;
 	
 	private DateFormat currentDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private File out = null;
@@ -86,20 +88,23 @@ public class TestLogger extends JFrame{
 	/**
 	 * Class constructor
 	 * 
+	 * For creating a new test log
 	 * 
 	 * @param String title
 	 * @param String[] test cases
 	 * @return none
 	 */
-	public TestLogger(String title, String[] testCases){
+	public TestLogger(String title, String tester, String testerRole){
 		this.title = title;
-		this.testCase = testCases;
-		//System.out.println(buildEmbedString(this.testCase));
+		this.tester = tester;
+		this.testerRole = testerRole;
+		this.testCase = new String[]{"-Select-", "Note"};
 	}
 	
 	/**
 	 * Class constructor (overloaded)
 	 * 
+	 * For opening an existing test log
 	 * 
 	 * @param String title
 	 * @param String[] test cases
@@ -110,6 +115,7 @@ public class TestLogger extends JFrame{
 		this.title = title;
 		this.testCase = testCases;
 		this.in = fp;
+		
 	}
 	
 	/**
@@ -119,9 +125,9 @@ public class TestLogger extends JFrame{
 	 * @return none
 	 */
 	@SuppressWarnings("serial")
-	public void showUI(){
+	public void showUI(String version){
 		this.setIconImage(new ImageIcon(getClass().getResource("/resources/h_well_frame_icon.png")).getImage());
-		this.setTitle("Test Log");
+		this.setTitle("Test Log  v"+version);
 		
 		/* kill on frame exit */
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -137,6 +143,7 @@ public class TestLogger extends JFrame{
 		if(this.in == null) {
 			tabPane = new TestLogTabbed(this.title, this.testCase);
 			tabPane.logPanel.logText.append(this.title+" Test Log Started: "+this.currentDate.format(new Date())+'@'+"<"+buildEmbedString(TestLogger.this.testCase)+">"+'\n');
+			tabPane.logPanel.logText.append("Tester: "+this.tester+", "+this.testerRole+'\n');
 			
 		}else {
 			tabPane = new TestLogTabbed(this.title, this.testCase, this.in);
@@ -559,17 +566,11 @@ public class TestLogger extends JFrame{
 		 */
 		tabPane.logPanel.exitLog.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				if(!tabPane.logPanel.logText.getText().equals("") && !saved) {
-					int res = JOptionPane.showConfirmDialog(tabPane.logPanel, "Do you want to save the current log?", "Test Log", JOptionPane.YES_NO_OPTION);
-					if(res == 0) {
-						tabPane.logPanel.logText.append(TestLogger.this.title+" Test Log Finished: "+TestLogger.this.currentDate.format(new Date())+'\n');
-						if(TestLogger.this.out != null) {
-							save(tabPane.logPanel.logText);
-						}else {
-							saveAs(TestLogger.this, tabPane.logPanel.logText);
-						}
-						saved = true;
-					}
+				tabPane.logPanel.logText.append(TestLogger.this.title+" Test Log Closed: "+TestLogger.this.currentDate.format(new Date())+'\n');
+				if(TestLogger.this.out != null) {
+					save(tabPane.logPanel.logText);
+				}else {
+					saveAs(TestLogger.this, tabPane.logPanel.logText);
 				}
 				TestLogger.this.dispose();
 				System.exit(0);

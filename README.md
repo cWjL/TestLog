@@ -2,6 +2,6 @@
 
 **Version**
 
-&nbsp;&nbsp;2.1
+&nbsp;&nbsp;3.0
 
 Application to log test activities

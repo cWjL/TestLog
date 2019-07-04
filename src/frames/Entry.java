@@ -29,6 +29,7 @@ public class Entry extends JFrame{
 	private static final long serialVersionUID = -3589089200466664223L;
 	public NewLogPanel newLog;
 	private String oldTitle = null;
+	public String version;
 	
 	/**
 	 * Show landing GUI
@@ -36,12 +37,13 @@ public class Entry extends JFrame{
 	 * @param None
 	 * @return None
 	 */
-	public void showUI(){
+	public void showUI(String version){
 		/*
 		 * Initial frame view with mode select panel
 		 */
+		this.version = version;
 		this.setIconImage(new ImageIcon(getClass().getResource("/resources/h_well_frame_icon.png")).getImage());
-		this.setTitle("Test Log");
+		this.setTitle("Test Log  v"+this.version);
 		
 		/* kill on frame exit */
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -87,7 +89,8 @@ public class Entry extends JFrame{
 					Entry.this.dispose();
 					// launchLogger needs to be changed to take tester name and role as parameters
 					// getOpts needs to be changed to remove the Test Case capture
-					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), getOpts(newLog.testerText.getText().replaceAll("@", "").split(",")), null);
+					launchLogger(newLog.projTitleText.getText().replaceAll("@", ""), newLog.testerText.getText().replaceAll("@", ""),
+							newLog.testerRoleText.getText().replaceAll("@", ""), null, null);
 				}
 			}
 		});
@@ -143,7 +146,7 @@ public class Entry extends JFrame{
 					  String[] tc = getInputFileTestCases(file);
 					  if(tc != null) {
 						  Entry.this.dispose();
-						  launchLogger(Entry.this.oldTitle, tc, file);
+						  launchLogger(Entry.this.oldTitle, null, null, tc, file);
 					  }
 				  }else {
 					  JOptionPane.showMessageDialog(newLog, "File not in proper format. Try again", "Test Log", JOptionPane.OK_OPTION);
@@ -285,7 +288,7 @@ public class Entry extends JFrame{
 	 * @param String[] test cases
 	 * @return none
 	 */
-	private void launchLogger(String title, String[] testCases, File fp){
+	private void launchLogger(String title, String tester, String testerRole, String[] testCases, File fp){
 		final String lafClassName = getLookAndFeelClassName("Nimbus");
 		SwingUtilities.invokeLater(new Runnable(){	// launch UI in AWT event-dispatching thread
 			public void run(){
@@ -301,9 +304,9 @@ public class Entry extends JFrame{
 					Logger.getLogger(Entry.class.getName()).log(Level.SEVERE, null, ex);
 				}
 				if(fp == null) {
-					new TestLogger(title, testCases).showUI();
+					new TestLogger(title, tester, testerRole).showUI(version);
 				}else {
-					new TestLogger(title, testCases, fp).showUI();
+					new TestLogger(title, testCases, fp).showUI(version);
 				}	
 			}
 		});

@@ -17,7 +17,7 @@ import frames.Entry;
  *  @version 2.0
  */
 public class Main {
-	private static final String VERSION = "2.1";
+	private static final String VERSION = "3.0";
 	
 	/**
 	 * Gets String of installed LAF based on selection String passed as parameter
@@ -67,7 +67,7 @@ public class Main {
 				}catch(UnsupportedLookAndFeelException ex){
 					Logger.getLogger(Entry.class.getName()).log(Level.SEVERE, null, ex);
 				}
-				new Entry().showUI();
+				new Entry().showUI(VERSION);
 			}
 		});
 	}
